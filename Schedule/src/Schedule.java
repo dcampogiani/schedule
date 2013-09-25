@@ -54,7 +54,7 @@ public class Schedule {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 1500, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -83,12 +83,12 @@ public class Schedule {
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 		
 		JSplitPane mainSplitPane = new JSplitPane();
-		mainSplitPane.setDividerLocation(300);
+		mainSplitPane.setDividerLocation(1200);
 		mainSplitPane.setResizeWeight(0.75);
 		frame.getContentPane().add(mainSplitPane);
 		
 		JSplitPane leftSplitPane = new JSplitPane();
-		leftSplitPane.setDividerLocation(200);
+		leftSplitPane.setDividerLocation(550);
 		leftSplitPane.setResizeWeight(0.75);
 		leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		mainSplitPane.setLeftComponent(leftSplitPane);
