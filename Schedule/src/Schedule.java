@@ -14,6 +14,14 @@ import javax.swing.JSplitPane;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JPopupMenu;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class Schedule {
@@ -104,6 +112,12 @@ public class Schedule {
 		leftSplitPane.setLeftComponent(editorScrollPane);
 		
 		editor = new JTextPane();
+		editor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				//appendToConsole("premuto "+arg0.getKeyChar());
+			}
+		});
 		editor.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
 		editorScrollPane.setViewportView(editor);
 		
@@ -115,6 +129,17 @@ public class Schedule {
 		console.setForeground(Color.RED);
 		console.setBackground(Color.LIGHT_GRAY);
 		consoleScollPane.setViewportView(console);
+		
+		JPopupMenu popupMenu = new JPopupMenu();
+		addPopup(console, popupMenu);
+		
+		JMenuItem mntmClear = new JMenuItem("Clear");
+		mntmClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				clearConsole();
+			}
+		});
+		popupMenu.add(mntmClear);
 		
 		JScrollPane treeScrollPane = new JScrollPane();
 		mainSplitPane.setRightComponent(treeScrollPane);
@@ -133,5 +158,22 @@ public class Schedule {
 	
 	public void setTree(JTree tree){
 		this.tree=tree;
+	}
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			private void showMenu(MouseEvent e) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
 	}
 }
