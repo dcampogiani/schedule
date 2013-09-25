@@ -11,14 +11,15 @@ import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import java.awt.Color;
 
 
 public class Schedule {
 
 	private JFrame frame;
-	private JTextPane editor;
 	private JTree tree;
 	private JTextArea console;
+	private JTextPane editor;
 
 	/**
 	 * Launch the application.
@@ -81,19 +82,19 @@ public class Schedule {
 		JMenuItem mntmSendReminders = new JMenuItem("Send reminders");
 		mnRun.add(mntmSendReminders);
 		
-		editor = new JTextPane();
-		
 		tree = new JTree();
 		
-		JScrollPane scrollPane = new JScrollPane();
+		JScrollPane scrollPaneConsole = new JScrollPane();
+		
+		JScrollPane scrollPaneEditor = new JScrollPane();
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
-						.addComponent(editor, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
+						.addComponent(scrollPaneEditor, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+						.addComponent(scrollPaneConsole, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(tree, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
@@ -105,27 +106,20 @@ public class Schedule {
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(editor, GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+							.addComponent(scrollPaneEditor, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(scrollPaneConsole, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		
-		console = new JTextArea();
-		console.setEditable(false);
-		scrollPane.setViewportView(console);
-		frame.getContentPane().setLayout(groupLayout);
+		editor = new JTextPane();
+		scrollPaneEditor.setViewportView(editor);
 		
-		appendToConsole("cicaoas");
-		appendToConsole("adsphfad");
-		appendToConsole("cicaoas");
-		appendToConsole("adsphfad");
-		appendToConsole("cicaoas");
-		appendToConsole("adsphfad");
-		appendToConsole("cicaoas");
-		appendToConsole("adsphfad");
-		appendToConsole("cicaoas");
-		appendToConsole("adsphfad");
+		console = new JTextArea();
+		console.setForeground(Color.RED);
+		console.setEditable(false);
+		scrollPaneConsole.setViewportView(console);
+		frame.getContentPane().setLayout(groupLayout);
 	}
 	
 	public void clearConsole(){
