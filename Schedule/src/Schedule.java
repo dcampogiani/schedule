@@ -4,23 +4,20 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import javax.swing.tree.DefaultMutableTreeNode;
 
-import java.awt.Color;
+import javax.swing.BoxLayout;
+import javax.swing.JSplitPane;
 
 
 public class Schedule {
 
 	private JFrame frame;
-	private JTextArea console;
 	private JTextPane editor;
+	private JTextArea console;
 	private JTree tree;
 
 	/**
@@ -83,48 +80,32 @@ public class Schedule {
 		
 		JMenuItem mntmSendReminders = new JMenuItem("Send reminders");
 		mnRun.add(mntmSendReminders);
+		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 		
-		JScrollPane scrollPaneConsole = new JScrollPane();
+		JSplitPane mainSplitPane = new JSplitPane();
+		frame.getContentPane().add(mainSplitPane);
 		
-		JScrollPane scrollPaneEditor = new JScrollPane();
+		JSplitPane leftSplitPane = new JSplitPane();
+		leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		mainSplitPane.setLeftComponent(leftSplitPane);
 		
-		JScrollPane scrollPaneTree = new JScrollPane();
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPaneEditor, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
-						.addComponent(scrollPaneConsole, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPaneTree, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(scrollPaneTree, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(scrollPaneEditor, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPaneConsole, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-		);
-
-		tree = new JTree();
-		scrollPaneTree.setViewportView(tree);
+		JScrollPane editorScrollPane = new JScrollPane();
+		leftSplitPane.setLeftComponent(editorScrollPane);
 		
 		editor = new JTextPane();
-		scrollPaneEditor.setViewportView(editor);
+		editorScrollPane.setViewportView(editor);
+		
+		JScrollPane consoleScollPane = new JScrollPane();
+		leftSplitPane.setRightComponent(consoleScollPane);
 		
 		console = new JTextArea();
-		console.setForeground(Color.RED);
-		console.setEditable(false);
-		scrollPaneConsole.setViewportView(console);
-		frame.getContentPane().setLayout(groupLayout);
+		consoleScollPane.setViewportView(console);
+		
+		JScrollPane treeScrollPane = new JScrollPane();
+		mainSplitPane.setRightComponent(treeScrollPane);
+		
+		tree = new JTree();
+		treeScrollPane.setViewportView(tree);
 	}
 	
 	public void clearConsole(){
