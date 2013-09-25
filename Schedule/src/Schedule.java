@@ -83,9 +83,13 @@ public class Schedule {
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 		
 		JSplitPane mainSplitPane = new JSplitPane();
+		mainSplitPane.setDividerLocation(300);
+		mainSplitPane.setResizeWeight(0.75);
 		frame.getContentPane().add(mainSplitPane);
 		
 		JSplitPane leftSplitPane = new JSplitPane();
+		leftSplitPane.setDividerLocation(200);
+		leftSplitPane.setResizeWeight(0.75);
 		leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		mainSplitPane.setLeftComponent(leftSplitPane);
 		
