@@ -23,6 +23,9 @@ public class MainView {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					System.setProperty("apple.laf.useScreenMenuBar", "true");
+					
 					MainView window = new MainView();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
