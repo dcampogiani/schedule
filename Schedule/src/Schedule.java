@@ -12,7 +12,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextArea;
 
 
-public class MainView {
+public class Schedule {
 
 	private JFrame frame;
 
@@ -26,7 +26,10 @@ public class MainView {
 					
 					System.setProperty("apple.laf.useScreenMenuBar", "true");
 					
-					MainView window = new MainView();
+					System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Schedule");
+
+					
+					Schedule window = new Schedule();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -38,7 +41,7 @@ public class MainView {
 	/**
 	 * Create the application.
 	 */
-	public MainView() {
+	public Schedule() {
 		initialize();
 	}
 
