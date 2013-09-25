@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -8,9 +9,11 @@ import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-
 import javax.swing.BoxLayout;
 import javax.swing.JSplitPane;
+import javax.swing.border.Border;
+import java.awt.Color;
+import java.awt.Font;
 
 
 public class Schedule {
@@ -56,7 +59,7 @@ public class Schedule {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1500, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+			
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
@@ -82,27 +85,35 @@ public class Schedule {
 		mnRun.add(mntmSendReminders);
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 		
+		Border emptyBorder = BorderFactory.createEmptyBorder();
+		
 		JSplitPane mainSplitPane = new JSplitPane();
 		mainSplitPane.setDividerLocation(1200);
 		mainSplitPane.setResizeWeight(0.75);
+		mainSplitPane.setBorder(emptyBorder);
 		frame.getContentPane().add(mainSplitPane);
 		
 		JSplitPane leftSplitPane = new JSplitPane();
 		leftSplitPane.setDividerLocation(550);
 		leftSplitPane.setResizeWeight(0.75);
 		leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		leftSplitPane.setBorder(emptyBorder);
 		mainSplitPane.setLeftComponent(leftSplitPane);
 		
 		JScrollPane editorScrollPane = new JScrollPane();
 		leftSplitPane.setLeftComponent(editorScrollPane);
 		
 		editor = new JTextPane();
+		editor.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
 		editorScrollPane.setViewportView(editor);
 		
 		JScrollPane consoleScollPane = new JScrollPane();
 		leftSplitPane.setRightComponent(consoleScollPane);
 		
 		console = new JTextArea();
+		console.setEditable(false);
+		console.setForeground(Color.RED);
+		console.setBackground(Color.LIGHT_GRAY);
 		consoleScollPane.setViewportView(console);
 		
 		JScrollPane treeScrollPane = new JScrollPane();
@@ -118,5 +129,9 @@ public class Schedule {
 	
 	public void appendToConsole(String text){
 		console.append(text+System.getProperty("line.separator"));
+	}
+	
+	public void setTree(JTree tree){
+		this.tree=tree;
 	}
 }
