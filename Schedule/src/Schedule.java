@@ -38,12 +38,12 @@ public class Schedule {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+
 					System.setProperty("apple.laf.useScreenMenuBar", "true");
-					
+
 					System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Schedule");
 
-					
+
 					Schedule window = new Schedule();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -67,50 +67,50 @@ public class Schedule {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1500, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
+
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		
+
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
-		
+
 		JMenuItem mntmNew = new JMenuItem("New");
 		mnFile.add(mntmNew);
-		
+
 		JMenuItem mntmSave = new JMenuItem("Save");
 		mnFile.add(mntmSave);
-		
+
 		JMenuItem mntmOpen = new JMenuItem("Open");
 		mnFile.add(mntmOpen);
-		
+
 		JMenu mnRun = new JMenu("Run");
 		menuBar.add(mnRun);
-		
+
 		JMenuItem mntmExportAsIcal = new JMenuItem("Export as .ical");
 		mnRun.add(mntmExportAsIcal);
-		
+
 		JMenuItem mntmSendReminders = new JMenuItem("Send reminders");
 		mnRun.add(mntmSendReminders);
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
-		
+
 		Border emptyBorder = BorderFactory.createEmptyBorder();
-		
+
 		JSplitPane mainSplitPane = new JSplitPane();
 		mainSplitPane.setDividerLocation(1200);
 		mainSplitPane.setResizeWeight(0.75);
 		mainSplitPane.setBorder(emptyBorder);
 		frame.getContentPane().add(mainSplitPane);
-		
+
 		JSplitPane leftSplitPane = new JSplitPane();
 		leftSplitPane.setDividerLocation(550);
 		leftSplitPane.setResizeWeight(0.75);
 		leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		leftSplitPane.setBorder(emptyBorder);
 		mainSplitPane.setLeftComponent(leftSplitPane);
-		
+
 		JScrollPane editorScrollPane = new JScrollPane();
 		leftSplitPane.setLeftComponent(editorScrollPane);
-		
+
 		editor = new JTextPane();
 		editor.addKeyListener(new KeyAdapter() {
 			@Override
@@ -120,19 +120,19 @@ public class Schedule {
 		});
 		editor.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
 		editorScrollPane.setViewportView(editor);
-		
+
 		JScrollPane consoleScollPane = new JScrollPane();
 		leftSplitPane.setRightComponent(consoleScollPane);
-		
+
 		console = new JTextArea();
 		console.setEditable(false);
 		console.setForeground(Color.RED);
 		console.setBackground(Color.LIGHT_GRAY);
 		consoleScollPane.setViewportView(console);
-		
+
 		JPopupMenu popupMenu = new JPopupMenu();
 		addPopup(console, popupMenu);
-		
+
 		JMenuItem mntmClear = new JMenuItem("Clear");
 		mntmClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -140,22 +140,22 @@ public class Schedule {
 			}
 		});
 		popupMenu.add(mntmClear);
-		
+
 		JScrollPane treeScrollPane = new JScrollPane();
 		mainSplitPane.setRightComponent(treeScrollPane);
-		
+
 		tree = new JTree();
 		treeScrollPane.setViewportView(tree);
 	}
-	
+
 	public void clearConsole(){
 		console.setText("");
 	}
-	
+
 	public void appendToConsole(String text){
 		console.append(text+System.getProperty("line.separator"));
 	}
-	
+
 	public void setTree(JTree tree){
 		this.tree=tree;
 	}
