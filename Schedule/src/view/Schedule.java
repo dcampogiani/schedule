@@ -90,9 +90,19 @@ public class Schedule {
 		mnFile.add(mntmNew);
 
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveFile();
+			}
+		});
 		mnFile.add(mntmSave);
 
 		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openFile();
+			}
+		});
 		mnFile.add(mntmOpen);
 
 		JMenu mnRun = new JMenu("Run");
@@ -207,14 +217,15 @@ public class Schedule {
 		JViewport viewport = scrollPane.getViewport();
 		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
 		File file = null;
-		Boolean toSave = false;
+		Boolean aborted = false;
 
 		if (editor.getFilePath()==null || editor.getFilePath().equals("")){
 			int returnValue = getFileChooser().showSaveDialog(frame);
+			aborted = true;
 			if (returnValue == JFileChooser.APPROVE_OPTION){
 				file = getFileChooser().getSelectedFile();
 				editor.setFilePath(file.getAbsolutePath());
-				toSave = true;
+				aborted = false;
 
 			}
 		}
@@ -222,7 +233,7 @@ public class Schedule {
 		else
 			file = new File(editor.getFilePath());
 		
-		if (!toSave)
+		if (aborted)
 			return;
 		
 		int response = JOptionPane.OK_OPTION;
