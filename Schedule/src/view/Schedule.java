@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 
 public class Schedule {
@@ -190,7 +191,14 @@ public class Schedule {
 			fileContent = "";
 		if (filePath==null || filePath.equals(""))
 			filePath = "";
-		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath);
+		
+		String ciao="ciao";
+		String on="on";
+		ArrayList<String> keyword = new ArrayList<String>();
+		keyword.add(ciao);
+		keyword.add(on);
+		
+		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,keyword);
 		scrollPane.setViewportView(editor);
 
 		tabbedPane.setSelectedComponent(scrollPane);
