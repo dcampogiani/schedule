@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Color;
 
@@ -95,15 +96,23 @@ public class Schedule {
 				saveFile();
 			}
 		});
+		
+				JMenuItem mntmOpen = new JMenuItem("Open");
+				mntmOpen.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						openFile();
+					}
+				});
+				mnFile.add(mntmOpen);
 		mnFile.add(mntmSave);
-
-		JMenuItem mntmOpen = new JMenuItem("Open");
-		mntmOpen.addActionListener(new ActionListener() {
+		
+		JMenuItem mntmClose = new JMenuItem("Close");
+		mntmClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				openFile();
+				closeCurrentFile();
 			}
 		});
-		mnFile.add(mntmOpen);
+		mnFile.add(mntmClose);
 
 		JMenu mnRun = new JMenu("Run");
 		menuBar.add(mnRun);
@@ -148,17 +157,17 @@ public class Schedule {
 
 		tree = new JTree();
 		treeScrollPane.setViewportView(tree);
-
-		addNewFile(null, null,null);//per aprire qualcosa all'inizio
-
 	}
 
 	private JFileChooser getFileChooser(){
-		if (fileChooser == null)
+		if (fileChooser == null){
 			fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Schedule source code", "sch");
+			fileChooser.setFileFilter(filter);
+
+		}
 		return fileChooser;
 	}
-
 
 	public void clearConsole(){
 		console.setText("");
@@ -183,6 +192,8 @@ public class Schedule {
 			filePath = "";
 		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath);
 		scrollPane.setViewportView(editor);
+
+		tabbedPane.setSelectedComponent(scrollPane);
 	}
 
 	public void openFile(){
@@ -203,6 +214,7 @@ public class Schedule {
 				in.close();
 				fileString= fileBuffer.toString();
 				addNewFile(file.getName(), fileString, file.getAbsolutePath());
+				appendToConsole("Aperto file "+file.getAbsolutePath());
 			}catch(IOException e){
 				appendToConsole("File not found:");
 				appendToConsole(e.toString());
@@ -223,28 +235,33 @@ public class Schedule {
 			int returnValue = getFileChooser().showSaveDialog(frame);
 			aborted = true;
 			if (returnValue == JFileChooser.APPROVE_OPTION){
-				file = getFileChooser().getSelectedFile();
+				String path = getFileChooser().getSelectedFile().getAbsolutePath();
+				if (!path.endsWith(".sch"))
+					path+=".sch";
+				file = new File(path);
 				editor.setFilePath(file.getAbsolutePath());
 				aborted = false;
 
 			}
 		}
-		
+
 		else
 			file = new File(editor.getFilePath());
-		
+
 		if (aborted)
 			return;
-		
+
 		int response = JOptionPane.OK_OPTION;
 		if (file.exists())
-			response = JOptionPane.showConfirmDialog(null,"Existing file", "Confirm Overwrite?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+			response = JOptionPane.showConfirmDialog(null,"Confirm Overwrite?","Existing file",JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
 		if (response!= JOptionPane.CANCEL_OPTION){
 			try {
 				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 				out.print(editor.getText());
 				out.flush();
 				out.close();
+				appendToConsole("Salvato "+ file.getName()+ " in "+ file.getAbsolutePath());
+				tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), file.getName());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -252,6 +269,10 @@ public class Schedule {
 				appendToConsole(e.toString());
 			}
 		}
+	}
+
+	public void closeCurrentFile(){
+		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
 }
