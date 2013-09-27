@@ -19,6 +19,7 @@ public class DCEditorTextPane extends JTextPane {
 	private static final long serialVersionUID = 1L;
 	private String path;
 	private ArrayList<String> keywords;
+	private ArrayList<String> separators;
 
 	public ArrayList<String> getKeywords(){
 		if(keywords==null)
@@ -32,6 +33,18 @@ public class DCEditorTextPane extends JTextPane {
 		highlight();
 	}
 
+	public ArrayList<String> getSeparators(){
+		if(separators==null)
+			separators=new ArrayList<String>();
+		return separators;
+	}
+
+	public void setSeparators(ArrayList<String> separators){
+		if (separators!=null)
+			this.separators=separators;
+		highlight();
+	}
+
 	public DCEditorTextPane(){
 		super();
 		addKeyListener(new KeyAdapter() {
@@ -42,7 +55,7 @@ public class DCEditorTextPane extends JTextPane {
 		});
 	}
 
-	public DCEditorTextPane(String text,String path, ArrayList<String> keywords){
+	public DCEditorTextPane(String text,String path, ArrayList<String> keywords,ArrayList<String> separators){
 		super();
 		if (text!=null)
 			setText(text);
@@ -50,6 +63,8 @@ public class DCEditorTextPane extends JTextPane {
 			this.path=path;
 		if (keywords!=null)
 			this.keywords=keywords;
+		if (separators!=null)
+			this.separators=separators;
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
@@ -70,6 +85,7 @@ public class DCEditorTextPane extends JTextPane {
 
 	private void highlight(){
 
+		
 		Highlighter h = getHighlighter();
 		h.removeAllHighlights();
 
@@ -78,6 +94,8 @@ public class DCEditorTextPane extends JTextPane {
 			int begin=0;
 			while ( (begin = getText().indexOf(keyword, pos))>=0){
 				try {
+
+					if( isClear(begin, keyword) )
 						h.addHighlight(begin, begin+keyword.length(), new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE) );
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
@@ -87,7 +105,15 @@ public class DCEditorTextPane extends JTextPane {
 			}
 		}
 
+	}
 
+	private boolean isClear(int begin,String word){
+
+		boolean before = (begin == 0 || getSeparators().contains(""+getText().charAt(begin-1))) ;
+
+		boolean after =  getText().endsWith(word) || separators.contains(""+getText().charAt(begin+word.length()));
+
+		return (before && after);
 
 	}
 

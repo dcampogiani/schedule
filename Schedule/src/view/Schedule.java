@@ -40,6 +40,8 @@ public class Schedule {
 	private JTree tree;
 	private JTabbedPane tabbedPane;
 	private JFileChooser fileChooser;
+	private ArrayList<String> keyword;
+	private ArrayList<String> separators;
 	/**
 	 * Launch the application.
 	 */
@@ -54,6 +56,25 @@ public class Schedule {
 
 
 					Schedule window = new Schedule();
+					
+					ArrayList<String> separators = new ArrayList<String>();
+					separators.add(" ");
+					separators.add(System.getProperty("line.separator"));
+					separators.add("\t");
+					separators.add("(");
+					separators.add(")");
+					separators.add("{");
+					separators.add("}");
+					window.setSeparators(separators);
+					
+					ArrayList<String> keywords = new ArrayList<String>();
+					keywords.add("for");
+					keywords.add("int");
+					keywords.add("var");
+					window.setKeywords(keywords);
+					
+					
+					
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -170,6 +191,28 @@ public class Schedule {
 		return fileChooser;
 	}
 
+	public ArrayList<String> getKeywords(){
+		if (keyword==null)
+			keyword = new ArrayList<String>();
+		return keyword;
+	}
+	
+	public void setKeywords(ArrayList<String> keywords){
+		if (keywords!=null)
+			this.keyword=keywords;
+	}
+	
+	public ArrayList<String> getSeparators(){
+		if (separators==null)
+			separators = new ArrayList<String>();
+		return separators;
+	}
+	
+	public void setSeparators(ArrayList<String> separators){
+		if (separators!=null)
+			this.separators=separators;
+	}
+	
 	public void clearConsole(){
 		console.setText("");
 	}
@@ -192,13 +235,7 @@ public class Schedule {
 		if (filePath==null || filePath.equals(""))
 			filePath = "";
 		
-		String ciao="ciao";
-		String on="on";
-		ArrayList<String> keyword = new ArrayList<String>();
-		keyword.add(ciao);
-		keyword.add(on);
-		
-		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,keyword);
+		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,getKeywords(),getSeparators());
 		scrollPane.setViewportView(editor);
 
 		tabbedPane.setSelectedComponent(scrollPane);
