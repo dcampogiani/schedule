@@ -1,5 +1,6 @@
 package view;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
@@ -14,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -23,6 +25,7 @@ import javax.swing.JTabbedPane;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,7 +59,7 @@ public class Schedule {
 
 
 					Schedule window = new Schedule();
-					
+
 					ArrayList<String> separators = new ArrayList<String>();
 					separators.add(" ");
 					separators.add(System.getProperty("line.separator"));
@@ -66,15 +69,15 @@ public class Schedule {
 					separators.add("{");
 					separators.add("}");
 					window.setSeparators(separators);
-					
+
 					ArrayList<String> keywords = new ArrayList<String>();
 					keywords.add("for");
 					keywords.add("int");
 					keywords.add("var");
 					window.setKeywords(keywords);
-					
-					
-					
+
+
+
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -105,6 +108,7 @@ public class Schedule {
 		menuBar.add(mnFile);
 
 		JMenuItem mntmNew = new JMenuItem("New");
+		mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addNewFile(null, null,null);
@@ -113,22 +117,25 @@ public class Schedule {
 		mnFile.add(mntmNew);
 
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntmSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveFile();
 			}
 		});
-		
-				JMenuItem mntmOpen = new JMenuItem("Open");
-				mntmOpen.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						openFile();
-					}
-				});
-				mnFile.add(mntmOpen);
+
+		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		mntmOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openFile();
+			}
+		});
+		mnFile.add(mntmOpen);
 		mnFile.add(mntmSave);
-		
+
 		JMenuItem mntmClose = new JMenuItem("Close");
+		mntmClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntmClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				closeCurrentFile();
@@ -196,23 +203,23 @@ public class Schedule {
 			keyword = new ArrayList<String>();
 		return keyword;
 	}
-	
+
 	public void setKeywords(ArrayList<String> keywords){
 		if (keywords!=null)
 			this.keyword=keywords;
 	}
-	
+
 	public ArrayList<String> getSeparators(){
 		if (separators==null)
 			separators = new ArrayList<String>();
 		return separators;
 	}
-	
+
 	public void setSeparators(ArrayList<String> separators){
 		if (separators!=null)
 			this.separators=separators;
 	}
-	
+
 	public void clearConsole(){
 		console.setText("");
 	}
@@ -234,19 +241,32 @@ public class Schedule {
 			fileContent = "";
 		if (filePath==null || filePath.equals(""))
 			filePath = "";
-		
+
 		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,getKeywords(),getSeparators());
 		scrollPane.setViewportView(editor);
 
 		tabbedPane.setSelectedComponent(scrollPane);
+		editor.requestFocus();
 	}
 
 	public void openFile(){
+		
 		int returnvalue = getFileChooser().showOpenDialog(frame);
 		File file = null;
 		String fileString = null;
 		if (returnvalue == JFileChooser.APPROVE_OPTION){
 			file = getFileChooser().getSelectedFile();
+			
+			for (int i=0;i<tabbedPane.getComponentCount();i++){
+				JScrollPane scroll = (JScrollPane)tabbedPane.getComponent(i);
+				JViewport viewport = (JViewport) scroll.getViewport();
+				DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
+				if (editor.getFilePath().equals(file.getAbsolutePath())){
+					tabbedPane.setSelectedIndex(i);
+					return;
+				}
+			}
+			
 			StringBuffer fileBuffer;
 			String line;
 			try{
