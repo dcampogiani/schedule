@@ -36,7 +36,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
-public class Schedule {
+public class Schedule implements IDEView{
 
 	private JFrame frame;
 	private JTextArea console;
@@ -146,7 +146,7 @@ public class Schedule {
 
 		tree = new JTree();
 		treeScrollPane.setViewportView(tree);
-		
+
 		frame.setVisible(true);
 	}
 
@@ -160,21 +160,9 @@ public class Schedule {
 		return fileChooser;
 	}
 
-	private ArrayList<String> getKeywords(){
-		if (keyword==null)
-			keyword = new ArrayList<String>();
-		return keyword;
-	}
-
 	public void setKeywords(ArrayList<String> keywords){
 		if (keywords!=null)
 			this.keyword=keywords;
-	}
-
-	private ArrayList<String> getSeparators(){
-		if (separators==null)
-			separators = new ArrayList<String>();
-		return separators;
 	}
 
 	public void setSeparators(ArrayList<String> separators){
@@ -218,13 +206,13 @@ public class Schedule {
 	}
 
 	public void openFile(){
-		
+
 		int returnvalue = getFileChooser().showOpenDialog(frame);
 		File file = null;
 		String fileString = null;
 		if (returnvalue == JFileChooser.APPROVE_OPTION){
 			file = getFileChooser().getSelectedFile();
-			
+
 			for (int i=0;i<tabbedPane.getComponentCount();i++){
 				JScrollPane scroll = (JScrollPane)tabbedPane.getComponent(i);
 				JViewport viewport = (JViewport) scroll.getViewport();
@@ -234,7 +222,7 @@ public class Schedule {
 					return;
 				}
 			}
-			
+
 			StringBuffer fileBuffer;
 			String line;
 			try{
@@ -308,7 +296,19 @@ public class Schedule {
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
+	private ArrayList<String> getKeywords(){
+		if (keyword==null)
+			keyword = new ArrayList<String>();
+		return keyword;
+	}
+
+	private ArrayList<String> getSeparators(){
+		if (separators==null)
+			separators = new ArrayList<String>();
+		return separators;
+	}
+
 	private void currentTextChanged(){
-		
+
 	}
 }
