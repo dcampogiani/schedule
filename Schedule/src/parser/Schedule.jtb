@@ -129,7 +129,7 @@ TOKEN :
 	< DATE : < INTEGER > "-" < INTEGER > "-" < INTEGER > > |
 	< TIMEEVENT : < INTEGER > ":" < INTEGER > > |
 	< STRING : "\"" < STRINGANY > "\"" > |
-	< STRINGANY : (< CHAR > | < DIGIT > | "_" | "-" )+ > |
+	< STRINGANY : (< CHAR > | < DIGIT > | "_" )+ > |
 	< MAIL : "\"" < STRINGANY > "@" < STRINGANY > "." < STRINGANY > "\"" > |
 	< REPEATINGCONSTANTS : "weekly" | "monthly" | "yearly" >
 }

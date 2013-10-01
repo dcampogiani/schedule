@@ -1,7 +1,11 @@
 package controller;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 
+import parser.ParseException;
+import parser.ScheduleParser;
+import parser.syntaxtree.Scope;
 import view.IDEIView;
 
 public class ScheduleController implements IDEIController {
@@ -9,6 +13,8 @@ public class ScheduleController implements IDEIController {
 	private ArrayList<String> separators;
 	private ArrayList<String> keywords;
 	private IDEIView view;
+	boolean parserInit=false;
+	private ScheduleParser parser;
 	
 	public ScheduleController(){
 		
@@ -65,8 +71,19 @@ public class ScheduleController implements IDEIController {
 
 
 	public void souceChanged(String source) {
-		view.appendToConsole("DA CONTROLLER: "+source);
-		
+		//view.appendToConsole("DA CONTROLLER: "+source);
+		if(!parserInit)
+			parser= new ScheduleParser(new StringReader(source));
+		else 
+			ScheduleParser.ReInit(new StringReader(source));
+		parserInit=true;
+		try {
+			Scope scope = ScheduleParser.Scope();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			view.clearConsole();
+			view.appendToConsole(e.toString());
+		} 
 	}
 
 }
