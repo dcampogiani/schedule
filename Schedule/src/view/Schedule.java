@@ -1,5 +1,4 @@
 package view;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
@@ -45,46 +44,6 @@ public class Schedule {
 	private JFileChooser fileChooser;
 	private ArrayList<String> keyword;
 	private ArrayList<String> separators;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-
-					System.setProperty("apple.laf.useScreenMenuBar", "true");
-
-					System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Schedule");
-
-
-					Schedule window = new Schedule();
-
-					ArrayList<String> separators = new ArrayList<String>();
-					separators.add(" ");
-					separators.add(System.getProperty("line.separator"));
-					separators.add("\t");
-					separators.add("(");
-					separators.add(")");
-					separators.add("{");
-					separators.add("}");
-					window.setSeparators(separators);
-
-					ArrayList<String> keywords = new ArrayList<String>();
-					keywords.add("for");
-					keywords.add("int");
-					keywords.add("var");
-					window.setKeywords(keywords);
-
-
-
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -186,6 +145,8 @@ public class Schedule {
 
 		tree = new JTree();
 		treeScrollPane.setViewportView(tree);
+		
+		frame.setVisible(true);
 	}
 
 	private JFileChooser getFileChooser(){
@@ -198,7 +159,7 @@ public class Schedule {
 		return fileChooser;
 	}
 
-	public ArrayList<String> getKeywords(){
+	private ArrayList<String> getKeywords(){
 		if (keyword==null)
 			keyword = new ArrayList<String>();
 		return keyword;
@@ -209,7 +170,7 @@ public class Schedule {
 			this.keyword=keywords;
 	}
 
-	public ArrayList<String> getSeparators(){
+	private ArrayList<String> getSeparators(){
 		if (separators==null)
 			separators = new ArrayList<String>();
 		return separators;
