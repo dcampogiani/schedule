@@ -1,13 +1,11 @@
 package view;
 
-import java.util.ArrayList;
-
 import javax.swing.JTree;
 
-public interface IDEView {
+import controller.IDEIController;
 
-	public void setKeywords(ArrayList<String> keywords);
-	public void setSeparators(ArrayList<String> separators);
+public interface IDEIView {
+
 	public void clearConsole();
 	public void appendToConsole(String text);
 	public void setTree(JTree tree);
@@ -15,4 +13,5 @@ public interface IDEView {
 	public void openFile();
 	public void saveFile();
 	public void closeCurrentFile();
+	public void setController(IDEIController controller);
 }

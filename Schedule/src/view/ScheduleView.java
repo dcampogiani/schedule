@@ -22,6 +22,8 @@ import java.awt.Color;
 
 import javax.swing.JTabbedPane;
 
+import controller.IDEIController;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
@@ -33,23 +35,24 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 
-public class Schedule implements IDEView{
+public class ScheduleView implements IDEIView{
 
 	private JFrame frame;
 	private JTextArea console;
 	private JTree tree;
 	private JTabbedPane tabbedPane;
 	private JFileChooser fileChooser;
-	private ArrayList<String> keyword;
-	private ArrayList<String> separators;
+	//private ArrayList<String> keyword;
+	//private ArrayList<String> separators;
+
+	private IDEIController controller;
 
 	/**
 	 * Create the application.
 	 */
-	public Schedule() {
+	public ScheduleView() {
 		initialize();
 	}
 
@@ -160,14 +163,17 @@ public class Schedule implements IDEView{
 		return fileChooser;
 	}
 
-	public void setKeywords(ArrayList<String> keywords){
-		if (keywords!=null)
-			this.keyword=keywords;
+	private void currentTextChanged(String text){
+		controller.souceChanged(text);
 	}
 
-	public void setSeparators(ArrayList<String> separators){
-		if (separators!=null)
-			this.separators=separators;
+	public void setController(IDEIController controller){
+		if (controller!=null)
+			this.controller=controller;
+	}
+
+	public void setTree(JTree tree){
+		this.tree=tree;
 	}
 
 	public void clearConsole(){
@@ -176,10 +182,6 @@ public class Schedule implements IDEView{
 
 	public void appendToConsole(String text){
 		console.append(text+System.getProperty("line.separator"));
-	}
-
-	public void setTree(JTree tree){
-		this.tree=tree;
 	}
 
 	public void addNewFile(String fileName, String fileContent, String filePath){
@@ -192,11 +194,13 @@ public class Schedule implements IDEView{
 		if (filePath==null || filePath.equals(""))
 			filePath = "";
 
-		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,getKeywords(),getSeparators());
+		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,controller.getKeywords(),controller.getSeparators());
 		editor.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				currentTextChanged();
+				DCEditorTextPane editor = (DCEditorTextPane)arg0.getComponent();
+				String text = editor.getText();
+				currentTextChanged(text);
 			}
 		});
 		scrollPane.setViewportView(editor);
@@ -294,21 +298,5 @@ public class Schedule implements IDEView{
 
 	public void closeCurrentFile(){
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
-	}
-
-	private ArrayList<String> getKeywords(){
-		if (keyword==null)
-			keyword = new ArrayList<String>();
-		return keyword;
-	}
-
-	private ArrayList<String> getSeparators(){
-		if (separators==null)
-			separators = new ArrayList<String>();
-		return separators;
-	}
-
-	private void currentTextChanged(){
-
 	}
 }

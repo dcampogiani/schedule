@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 
-import view.Schedule;
+import controller.IDEIController;
+import controller.ScheduleController;
+import view.IDEIView;
+import view.ScheduleView;
 
 
 public class MyMain {
@@ -12,9 +15,6 @@ public class MyMain {
 
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Schedule");
 
-
-		Schedule window = new Schedule();
-
 		ArrayList<String> separators = new ArrayList<String>();
 		separators.add(" ");
 		separators.add(System.getProperty("line.separator"));
@@ -23,13 +23,18 @@ public class MyMain {
 		separators.add(")");
 		separators.add("{");
 		separators.add("}");
-		window.setSeparators(separators);
-
+		
 		ArrayList<String> keywords = new ArrayList<String>();
 		keywords.add("for");
 		keywords.add("int");
 		keywords.add("var");
-		window.setKeywords(keywords);
+		
+		IDEIController controller = new ScheduleController(separators, keywords);
+		IDEIView window = new ScheduleView();
+		controller.setView(window);
+		window.setController(controller);
+		
+		
 	}
 
 }
