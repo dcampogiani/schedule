@@ -16,7 +16,7 @@ public class ScheduleParser{  }PARSER_END(ScheduleParser)SKIP :
 
 void Scope() : { }
 {
-	( Declarations() )? Body()
+	Declarations() Body()
 }
 
 void Declarations() : { }
@@ -117,4 +117,19 @@ void RepeatingDefine() : { }
 void RepeatingStop() : { }
 {
   "untill" < DATE >
+}
+
+TOKEN :
+{
+	< DIGIT: ["0"-"9"] >	|
+ 	< INTEGER : (< DIGIT >)+ >	|
+ 	< CHAR: ["A"-"Z"] | ["a"-"z"]>  |
+ 	< ID: <CHAR> (<CHAR> | <DIGIT>)*>	|
+	< TIMEZONE : (< CHAR >)+ "/" (< CHAR >)* > |
+	< DATE : < INTEGER > "-" < INTEGER > "-" < INTEGER > > |
+	< TIMEEVENT : < INTEGER > ":" < INTEGER > > |
+	< STRING : "\"" < STRINGANY > "\"" > |
+	< STRINGANY : (< CHAR > | < DIGIT > | "_" | "-" )+ > |
+	< MAIL : "\"" < STRINGANY > "@" < STRINGANY > "." < STRINGANY > "\"" > |
+	< REPEATINGCONSTANTS : "weekly" | "monthly" | "yearly" >
 }
