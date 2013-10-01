@@ -24,6 +24,7 @@ import javax.swing.JTabbedPane;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -204,6 +205,12 @@ public class Schedule {
 			filePath = "";
 
 		DCEditorTextPane editor = new DCEditorTextPane(fileContent,filePath,getKeywords(),getSeparators());
+		editor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				currentTextChanged();
+			}
+		});
 		scrollPane.setViewportView(editor);
 
 		tabbedPane.setSelectedComponent(scrollPane);
@@ -301,4 +308,7 @@ public class Schedule {
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
+	private void currentTextChanged(){
+		
+	}
 }
