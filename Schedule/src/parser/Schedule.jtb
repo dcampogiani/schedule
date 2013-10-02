@@ -75,7 +75,7 @@ void FromToDuration() : { }
 
 void TimeEvent() : { }
 {
-  < DIGIT > <DIGIT > ":" < DIGIT > < DIGIT >}  
+  < INTEGER > ":" < INTEGER >}  
 
 void Doing() : { }
 {

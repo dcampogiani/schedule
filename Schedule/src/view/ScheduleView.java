@@ -147,7 +147,7 @@ public class ScheduleView implements IDEIView{
 		JScrollPane treeScrollPane = new JScrollPane();
 		mainSplitPane.setRightComponent(treeScrollPane);
 
-		tree = new JTree();
+		tree = getJTree();
 		treeScrollPane.setViewportView(tree);
 
 		frame.setVisible(true);
@@ -161,6 +161,14 @@ public class ScheduleView implements IDEIView{
 
 		}
 		return fileChooser;
+	}
+
+	private JTree getJTree(){
+		if (tree==null){
+			tree = new JTree();
+			tree.setVisible(false);
+		}
+		return tree;
 	}
 
 	private void currentTextChanged(String text){
@@ -299,5 +307,11 @@ public class ScheduleView implements IDEIView{
 
 	public void closeCurrentFile(){
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
+	}
+
+	public void clearTree() {
+		// TODO Auto-generated method stub
+
+		
 	}
 }

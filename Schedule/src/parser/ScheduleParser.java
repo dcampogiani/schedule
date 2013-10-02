@@ -322,21 +322,13 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n3 = null;
   NodeToken n4 = null;
   Token n5 = null;
-  NodeToken n6 = null;
-  Token n7 = null;
-  NodeToken n8 = null;
-  Token n9 = null;
-    n1 = jj_consume_token(DIGIT);
+    n1 = jj_consume_token(INTEGER);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(DIGIT);
+    n3 = jj_consume_token(11);
     n2 = JTBToolkit.makeNodeToken(n3);
-    n5 = jj_consume_token(11);
+    n5 = jj_consume_token(INTEGER);
     n4 = JTBToolkit.makeNodeToken(n5);
-    n7 = jj_consume_token(DIGIT);
-    n6 = JTBToolkit.makeNodeToken(n7);
-    n9 = jj_consume_token(DIGIT);
-    n8 = JTBToolkit.makeNodeToken(n9);
-    {if (true) return new TimeEvent(n0, n2, n4, n6, n8);}
+    {if (true) return new TimeEvent(n0, n2, n4);}
     throw new Error("Missing return statement in function");
   }
 
