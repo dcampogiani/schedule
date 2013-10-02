@@ -8,6 +8,7 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -72,6 +73,8 @@ public class DCEditorTextPane extends JTextPane {
 			}
 		});
 		highlight();
+		setBackground(Color.WHITE);
+		setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		
 	}
 
@@ -97,7 +100,7 @@ public class DCEditorTextPane extends JTextPane {
 				try {
 
 					if( isClear(begin, keyword) )
-						h.addHighlight(begin, begin+keyword.length(), new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE) );
+						h.addHighlight(begin, begin+keyword.length(), new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY) );
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

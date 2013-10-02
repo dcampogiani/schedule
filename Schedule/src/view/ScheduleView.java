@@ -1,4 +1,5 @@
 package view;
+import java.awt.Insets;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
@@ -35,6 +36,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.awt.Font;
 
 
 public class ScheduleView implements IDEIView{
@@ -136,9 +138,13 @@ public class ScheduleView implements IDEIView{
 
 
 		console = new JTextArea();
+		console.setWrapStyleWord(true);
+		console.setToolTipText("Console");
+		console.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
 		console.setEditable(false);
-		console.setForeground(Color.RED);
-		console.setBackground(Color.LIGHT_GRAY);
+		console.setForeground(Color.WHITE);
+		console.setBackground(Color.DARK_GRAY);
+		console.setMargin( new Insets(5,10,0,10));
 		consoleScollPane.setViewportView(console);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);

@@ -86,7 +86,7 @@ public class ScheduleController implements IDEIController {
 			view.appendToConsole("Sintassi OK");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			view.appendToConsole(e.toString());
+			view.appendToConsole(e.getMessage() );
 		} 
 	}
 
