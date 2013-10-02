@@ -41,23 +41,21 @@ import java.awt.Font;
 
 
 
-public class ScheduleView implements IDEIView{
+public abstract class IDEAbstractView implements IDEIView{
 
 	private JFrame frame;
 	private JTextArea console;
 	private JTree tree;
 	private JTabbedPane tabbedPane;
 	private JFileChooser fileChooser;
-	private JMenuBar menuBar;
-	//private ArrayList<String> keyword;
-	//private ArrayList<String> separators;
+	protected JMenuBar menuBar;
 
-	private IDEIController controller;
+	protected IDEIController controller;
 
 	/**
 	 * Create the application.
 	 */
-	public ScheduleView(IDEIController controller) {
+	public IDEAbstractView(IDEIController controller) {
 		this.controller=controller;
 		initialize();
 	}
@@ -65,55 +63,12 @@ public class ScheduleView implements IDEIView{
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	protected void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1500, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
-
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-
-		JMenuItem mntmNew = new JMenuItem("New");
-		mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		mntmNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				addNewFile(null, null,null);
-			}
-		});
-		mnFile.add(mntmNew);
-
-		JMenuItem mntmSave = new JMenuItem("Save");
-		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		mntmSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				saveFile();
-			}
-		});
-
-		JMenuItem mntmOpen = new JMenuItem("Open");
-		mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		mntmOpen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				openFile();
-			}
-		});
-		mnFile.add(mntmOpen);
-		mnFile.add(mntmSave);
-
-		JMenuItem mntmClose = new JMenuItem("Close");
-		mntmClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		mntmClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				closeCurrentFile();
-			}
-		});
-		mnFile.add(mntmClose);
-		
-		for (JMenu current : controller.getMenus() )
-			menuBar.add(current);
+		frame.setJMenuBar(getMenuBar());
 
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 
@@ -134,17 +89,7 @@ public class ScheduleView implements IDEIView{
 
 		JScrollPane consoleScollPane = new JScrollPane();
 		leftSplitPane.setRightComponent(consoleScollPane);
-
-
-		console = new JTextArea();
-		console.setWrapStyleWord(true);
-		console.setToolTipText("Console");
-		console.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		console.setEditable(false);
-		console.setForeground(Color.WHITE);
-		console.setBackground(Color.DARK_GRAY);
-		console.setMargin( new Insets(5,10,0,10));
-		consoleScollPane.setViewportView(console);
+		consoleScollPane.setViewportView(getConsole());
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		leftSplitPane.setLeftComponent(tabbedPane);
@@ -159,26 +104,91 @@ public class ScheduleView implements IDEIView{
 		frame.setVisible(true);
 	}
 
-	private JFileChooser getFileChooser(){
+	protected JFileChooser getFileChooser(){
 		if (fileChooser == null){
 			fileChooser = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Source code", getFileExtension());
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(getLanguageName()+" source code", getFileExtension());
 			fileChooser.setFileFilter(filter);
 
 		}
 		return fileChooser;
 	}
 
-	private JTree getJTree(){
+	protected JTree getJTree(){
 		if (tree==null)
 			tree = new JTree();
 		return tree;
 	}
 
-	private String getFileExtension(){
-		return "sch";
+	protected JTextArea getConsole(){
+		if (console==null){
+			console = new JTextArea();
+			console.setWrapStyleWord(true);
+			console.setToolTipText("Console");
+			console.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+			console.setEditable(false);
+			console.setForeground(Color.WHITE);
+			console.setBackground(Color.DARK_GRAY);
+			console.setMargin( new Insets(5,10,0,10));
+		}
+		return console;
 	}
-	
+
+	protected JMenuBar getMenuBar(){
+		if (menuBar==null){
+			menuBar = new JMenuBar();
+
+
+			JMenu mnFile = new JMenu("File");
+			menuBar.add(mnFile);
+
+			JMenuItem mntmNew = new JMenuItem("New");
+			mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			mntmNew.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					addNewFile(null, null,null);
+				}
+			});
+			mnFile.add(mntmNew);
+
+			JMenuItem mntmSave = new JMenuItem("Save");
+			mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			mntmSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					saveFile();
+				}
+			});
+
+			JMenuItem mntmOpen = new JMenuItem("Open");
+			mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			mntmOpen.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					openFile();
+				}
+			});
+			mnFile.add(mntmOpen);
+			mnFile.add(mntmSave);
+
+			JMenuItem mntmClose = new JMenuItem("Close");
+			mntmClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			mntmClose.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					closeCurrentFile();
+				}
+			});
+			mnFile.add(mntmClose);
+
+			for (JMenu current : controller.getMenus() )
+				menuBar.add(current);
+
+		}
+		return menuBar;
+	}
+
+	protected abstract String getLanguageName();
+
+	protected  abstract String getFileExtension();
+
 	private void currentTextChanged(String text){
 		controller.souceChanged(text);
 	}
@@ -191,7 +201,7 @@ public class ScheduleView implements IDEIView{
 	public void setTree(JTree tree){
 		this.tree=tree;
 	}	
-	
+
 	public void clearConsole(){
 		console.setText("");
 	}
@@ -321,11 +331,11 @@ public class ScheduleView implements IDEIView{
 		// TODO Auto-generated method stub
 		if (this.tree!=null)
 			tree.setVisible(false);
-		
+
 	}
 
 	public String getCurrentSource(){
-		
+
 		Component component = tabbedPane.getSelectedComponent();
 		if (component==null)
 			return null;
@@ -333,7 +343,7 @@ public class ScheduleView implements IDEIView{
 		JViewport viewport = (JViewport) scroll.getViewport();
 		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
 		return editor.getText();
-		
+
 	}
-	
+
 }
