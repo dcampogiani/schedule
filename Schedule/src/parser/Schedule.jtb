@@ -16,7 +16,7 @@ public class ScheduleParser{  }PARSER_END(ScheduleParser)SKIP :
 
 void Scope() : { }
 {
-	Declarations() Body()
+	Declarations() Body() < EOF >
 }
 
 void Declarations() : { }
@@ -44,15 +44,19 @@ void LocationDeclaration() : { }
 	"location" < ID > "=" < STRING > ";"
 }
 
-void Body() : {}
+void Body() : { }
 {
 	( Day() )*
 }
 
 void Day() : { }
 {
-	"on" < DATE > ":" "{" Duration() Doing() ( Partecipants() )? ( Location() )? ( Repeating() )? "}"
+	"on" DayDate() ":" "{" Duration() Doing() ( Partecipants() )? ( Location() )? ( Repeating() )? "}"
 }
+
+void DayDate() : { }
+{
+  < INTEGER > "-" < INTEGER > "-" < INTEGER >}
 
 void Duration() : { }
 {
@@ -66,8 +70,12 @@ void AllDayDuration() : { }
 
 void FromToDuration() : { }
 {
-  "from" < TIMEEVENT > "to" < TIMEEVENT >
+  "from" TimeEvent() "to" TimeEvent()
 }
+
+void TimeEvent() : { }
+{
+  < DIGIT > <DIGIT > ":" < DIGIT > < DIGIT >}  
 
 void Doing() : { }
 {
@@ -106,30 +114,22 @@ void Repeating() : { }
 
 void RepeatingTime() : { }
 {
-	RepeatingDefine() | < REPEATINGCONSTANTS >
-}
-
-void RepeatingDefine() : { }
-{
 	"every" < INTEGER > "days"
 }
 
 void RepeatingStop() : { }
 {
-  "untill" < DATE >
+  "untill" DayDate()
 }
 
 TOKEN :
 {
-	< DIGIT: ["0"-"9"] >	|
  	< INTEGER : (< DIGIT >)+ >	|
+ 	< DIGIT: ["0"-"9"] >	|
  	< CHAR: ["A"-"Z"] | ["a"-"z"]>  |
  	< ID: <CHAR> (<CHAR> | <DIGIT>)*>	|
 	< TIMEZONE : (< CHAR >)+ "/" (< CHAR >)* > |
-	< DATE : < INTEGER > "-" < INTEGER > "-" < INTEGER > > |
-	< TIMEEVENT : < INTEGER > ":" < INTEGER > > |
 	< STRING : "\"" < STRINGANY > "\"" > |
 	< STRINGANY : (< CHAR > | < DIGIT > | "_" )+ > |
-	< MAIL : "\"" < STRINGANY > "@" < STRINGANY > "." < STRINGANY > "\"" > |
-	< REPEATINGCONSTANTS : "weekly" | "monthly" | "yearly" >
+	< MAIL : "\"" < STRINGANY > "@" < STRINGANY > "." < STRINGANY > "\"" >
 }

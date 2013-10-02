@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
@@ -71,17 +72,20 @@ public class ScheduleController implements IDEIController {
 
 
 	public void souceChanged(String source) {
+		view.clearConsole();
 		//view.appendToConsole("DA CONTROLLER: "+source);
+		StringReader reader = new StringReader(source);
+		BufferedReader buff= new BufferedReader(reader);
 		if(!parserInit)
-			parser= new ScheduleParser(new StringReader(source));
+			parser= new ScheduleParser(buff);
 		else 
-			ScheduleParser.ReInit(new StringReader(source));
+			ScheduleParser.ReInit(buff);
 		parserInit=true;
 		try {
 			Scope scope = ScheduleParser.Scope();
+			view.appendToConsole("Sintassi OK");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			view.clearConsole();
 			view.appendToConsole(e.toString());
 		} 
 	}

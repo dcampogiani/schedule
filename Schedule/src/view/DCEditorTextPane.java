@@ -71,7 +71,8 @@ public class DCEditorTextPane extends JTextPane {
 				highlight();
 			}
 		});
-
+		highlight();
+		
 	}
 
 	public String getFilePath(){

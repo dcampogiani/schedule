@@ -207,6 +207,7 @@ public class ScheduleView implements IDEIView{
 
 		tabbedPane.setSelectedComponent(scrollPane);
 		editor.requestFocus();
+		currentTextChanged(editor.getText());
 	}
 
 	public void openFile(){
