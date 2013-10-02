@@ -153,6 +153,7 @@ public class ScheduleView implements IDEIView{
 		mainSplitPane.setRightComponent(treeScrollPane);
 
 		tree = getJTree();
+		clearTree();
 		treeScrollPane.setViewportView(tree);
 
 		frame.setVisible(true);
@@ -161,7 +162,7 @@ public class ScheduleView implements IDEIView{
 	private JFileChooser getFileChooser(){
 		if (fileChooser == null){
 			fileChooser = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Schedule source code", "sch");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Source code", getFileExtension());
 			fileChooser.setFileFilter(filter);
 
 		}
@@ -169,13 +170,15 @@ public class ScheduleView implements IDEIView{
 	}
 
 	private JTree getJTree(){
-		if (tree==null){
+		if (tree==null)
 			tree = new JTree();
-			tree.setVisible(false);
-		}
 		return tree;
 	}
 
+	private String getFileExtension(){
+		return "sch";
+	}
+	
 	private void currentTextChanged(String text){
 		controller.souceChanged(text);
 	}
@@ -275,8 +278,8 @@ public class ScheduleView implements IDEIView{
 			aborted = true;
 			if (returnValue == JFileChooser.APPROVE_OPTION){
 				String path = getFileChooser().getSelectedFile().getAbsolutePath();
-				if (!path.endsWith(".sch"))
-					path+=".sch";
+				if (!path.endsWith(getFileExtension()))
+					path+="."+getFileExtension();
 				file = new File(path);
 				editor.setFilePath(file.getAbsolutePath());
 				aborted = false;
@@ -316,7 +319,8 @@ public class ScheduleView implements IDEIView{
 
 	public void clearTree() {
 		// TODO Auto-generated method stub
-
+		if (this.tree!=null)
+			tree.setVisible(false);
 		
 	}
 
