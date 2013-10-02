@@ -1,4 +1,5 @@
 package view;
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
@@ -39,6 +40,7 @@ import java.io.PrintWriter;
 import java.awt.Font;
 
 
+
 public class ScheduleView implements IDEIView{
 
 	private JFrame frame;
@@ -46,6 +48,7 @@ public class ScheduleView implements IDEIView{
 	private JTree tree;
 	private JTabbedPane tabbedPane;
 	private JFileChooser fileChooser;
+	private JMenuBar menuBar;
 	//private ArrayList<String> keyword;
 	//private ArrayList<String> separators;
 
@@ -54,7 +57,8 @@ public class ScheduleView implements IDEIView{
 	/**
 	 * Create the application.
 	 */
-	public ScheduleView() {
+	public ScheduleView(IDEIController controller) {
+		this.controller=controller;
 		initialize();
 	}
 
@@ -66,7 +70,7 @@ public class ScheduleView implements IDEIView{
 		frame.setBounds(100, 100, 1500, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 
 		JMenu mnFile = new JMenu("File");
@@ -107,15 +111,10 @@ public class ScheduleView implements IDEIView{
 			}
 		});
 		mnFile.add(mntmClose);
+		
+		for (JMenu current : controller.getMenus() )
+			menuBar.add(current);
 
-		JMenu mnRun = new JMenu("Run");
-		menuBar.add(mnRun);
-
-		JMenuItem mntmExportAsIcal = new JMenuItem("Export as .ical");
-		mnRun.add(mntmExportAsIcal);
-
-		JMenuItem mntmSendReminders = new JMenuItem("Send reminders");
-		mnRun.add(mntmSendReminders);
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 
 		Border emptyBorder = BorderFactory.createEmptyBorder();
@@ -188,8 +187,8 @@ public class ScheduleView implements IDEIView{
 
 	public void setTree(JTree tree){
 		this.tree=tree;
-	}
-
+	}	
+	
 	public void clearConsole(){
 		console.setText("");
 	}
@@ -320,4 +319,17 @@ public class ScheduleView implements IDEIView{
 
 		
 	}
+
+	public String getCurrentSource(){
+		
+		Component component = tabbedPane.getSelectedComponent();
+		if (component==null)
+			return null;
+		JScrollPane scroll = (JScrollPane)component;
+		JViewport viewport = (JViewport) scroll.getViewport();
+		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
+		return editor.getText();
+		
+	}
+	
 }

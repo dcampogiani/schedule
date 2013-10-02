@@ -15,4 +15,5 @@ public interface IDEIView {
 	public void saveFile();
 	public void closeCurrentFile();
 	public void setController(IDEIController controller);
+	public String getCurrentSource();
 }

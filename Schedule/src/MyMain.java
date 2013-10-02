@@ -16,11 +16,9 @@ public class MyMain {
 
 		
 		IDEIController controller = new ScheduleController();
-		IDEIView window = new ScheduleView();
+		IDEIView window = new ScheduleView(controller);
 		controller.setView(window);
-		window.setController(controller);
-		
-		
+				
 	}
 
 }
