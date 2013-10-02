@@ -41,8 +41,8 @@ public class ScheduleParser implements ScheduleParserConstants {
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 7:
       case 8:
-      case 9:
         ;
         break;
       default:
@@ -65,17 +65,13 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n3 = null;
   NodeToken n4 = null;
   Token n5 = null;
-  NodeToken n6 = null;
-  Token n7 = null;
     n1 = jj_consume_token(5);
     n0 = JTBToolkit.makeNodeToken(n1);
     n3 = jj_consume_token(6);
     n2 = JTBToolkit.makeNodeToken(n3);
     n5 = jj_consume_token(TIMEZONE);
     n4 = JTBToolkit.makeNodeToken(n5);
-    n7 = jj_consume_token(7);
-    n6 = JTBToolkit.makeNodeToken(n7);
-    {if (true) return new TimeZoneDeclaration(n0, n2, n4, n6);}
+    {if (true) return new TimeZoneDeclaration(n0, n2, n4);}
     throw new Error("Missing return statement in function");
   }
 
@@ -85,11 +81,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   PersonDeclaration n1 = null;
   LocationDeclaration n2 = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 8:
+    case 7:
       n1 = PersonDeclaration();
       n0 = new NodeChoice(n1, 0, 2);
       break;
-    case 9:
+    case 8:
       n2 = LocationDeclaration();
       n0 = new NodeChoice(n2, 1, 2);
       break;
@@ -112,9 +108,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n5 = null;
   NodeToken n6 = null;
   Token n7 = null;
-  NodeToken n8 = null;
-  Token n9 = null;
-    n1 = jj_consume_token(8);
+    n1 = jj_consume_token(7);
     n0 = JTBToolkit.makeNodeToken(n1);
     n3 = jj_consume_token(ID);
     n2 = JTBToolkit.makeNodeToken(n3);
@@ -122,9 +116,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     n4 = JTBToolkit.makeNodeToken(n5);
     n7 = jj_consume_token(MAIL);
     n6 = JTBToolkit.makeNodeToken(n7);
-    n9 = jj_consume_token(7);
-    n8 = JTBToolkit.makeNodeToken(n9);
-    {if (true) return new PersonDeclaration(n0, n2, n4, n6, n8);}
+    {if (true) return new PersonDeclaration(n0, n2, n4, n6);}
     throw new Error("Missing return statement in function");
   }
 
@@ -138,9 +130,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n5 = null;
   NodeToken n6 = null;
   Token n7 = null;
-  NodeToken n8 = null;
-  Token n9 = null;
-    n1 = jj_consume_token(9);
+    n1 = jj_consume_token(8);
     n0 = JTBToolkit.makeNodeToken(n1);
     n3 = jj_consume_token(ID);
     n2 = JTBToolkit.makeNodeToken(n3);
@@ -148,9 +138,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     n4 = JTBToolkit.makeNodeToken(n5);
     n7 = jj_consume_token(STRING);
     n6 = JTBToolkit.makeNodeToken(n7);
-    n9 = jj_consume_token(7);
-    n8 = JTBToolkit.makeNodeToken(n9);
-    {if (true) return new LocationDeclaration(n0, n2, n4, n6, n8);}
+    {if (true) return new LocationDeclaration(n0, n2, n4, n6);}
     throw new Error("Missing return statement in function");
   }
 
@@ -161,7 +149,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 10:
+      case 9:
         ;
         break;
       default:
@@ -183,57 +171,53 @@ public class ScheduleParser implements ScheduleParserConstants {
   DayDate n2 = null;
   NodeToken n3 = null;
   Token n4 = null;
-  NodeToken n5 = null;
-  Token n6 = null;
-  Duration n7 = null;
-  Doing n8 = null;
+  Duration n5 = null;
+  Doing n6 = null;
+  NodeOptional n7 = new NodeOptional();
+  Partecipants n8 = null;
   NodeOptional n9 = new NodeOptional();
-  Partecipants n10 = null;
+  Location n10 = null;
   NodeOptional n11 = new NodeOptional();
-  Location n12 = null;
-  NodeOptional n13 = new NodeOptional();
-  Repeating n14 = null;
-  NodeToken n15 = null;
-  Token n16 = null;
-    n1 = jj_consume_token(10);
+  Repeating n12 = null;
+  NodeToken n13 = null;
+  Token n14 = null;
+    n1 = jj_consume_token(9);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = DayDate();
-    n4 = jj_consume_token(11);
+    n4 = jj_consume_token(10);
     n3 = JTBToolkit.makeNodeToken(n4);
-    n6 = jj_consume_token(12);
-    n5 = JTBToolkit.makeNodeToken(n6);
-    n7 = Duration();
-    n8 = Doing();
+    n5 = Duration();
+    n6 = Doing();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 19:
-      n10 = Partecipants();
-      n9.addNode(n10);
+    case 18:
+      n8 = Partecipants();
+      n7.addNode(n8);
       break;
     default:
       jj_la1[4] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 21:
-      n12 = Location();
-      n11.addNode(n12);
+    case 20:
+      n10 = Location();
+      n9.addNode(n10);
       break;
     default:
       jj_la1[5] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 22:
-      n14 = Repeating();
-      n13.addNode(n14);
+    case 21:
+      n12 = Repeating();
+      n11.addNode(n12);
       break;
     default:
       jj_la1[6] = jj_gen;
       ;
     }
-    n16 = jj_consume_token(13);
-    n15 = JTBToolkit.makeNodeToken(n16);
-    {if (true) return new Day(n0, n2, n3, n5, n7, n8, n9, n11, n13, n15);}
+    n14 = jj_consume_token(11);
+    n13 = JTBToolkit.makeNodeToken(n14);
+    {if (true) return new Day(n0, n2, n3, n5, n6, n7, n9, n11, n13);}
     throw new Error("Missing return statement in function");
   }
 
@@ -251,11 +235,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n9 = null;
     n1 = jj_consume_token(INTEGER);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(14);
+    n3 = jj_consume_token(12);
     n2 = JTBToolkit.makeNodeToken(n3);
     n5 = jj_consume_token(INTEGER);
     n4 = JTBToolkit.makeNodeToken(n5);
-    n7 = jj_consume_token(14);
+    n7 = jj_consume_token(12);
     n6 = JTBToolkit.makeNodeToken(n7);
     n9 = jj_consume_token(INTEGER);
     n8 = JTBToolkit.makeNodeToken(n9);
@@ -269,11 +253,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   AllDayDuration n1 = null;
   FromToDuration n2 = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 15:
+    case 13:
       n1 = AllDayDuration();
       n0 = new NodeChoice(n1, 0, 2);
       break;
-    case 16:
+    case 14:
       n2 = FromToDuration();
       n0 = new NodeChoice(n2, 1, 2);
       break;
@@ -290,7 +274,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
   Token n1 = null;
-    n1 = jj_consume_token(15);
+    n1 = jj_consume_token(13);
     n0 = JTBToolkit.makeNodeToken(n1);
     {if (true) return new AllDayDuration(n0);}
     throw new Error("Missing return statement in function");
@@ -304,10 +288,10 @@ public class ScheduleParser implements ScheduleParserConstants {
   NodeToken n3 = null;
   Token n4 = null;
   TimeEvent n5 = null;
-    n1 = jj_consume_token(16);
+    n1 = jj_consume_token(14);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = TimeEvent();
-    n4 = jj_consume_token(17);
+    n4 = jj_consume_token(15);
     n3 = JTBToolkit.makeNodeToken(n4);
     n5 = TimeEvent();
     {if (true) return new FromToDuration(n0, n2, n3, n5);}
@@ -324,7 +308,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n5 = null;
     n1 = jj_consume_token(INTEGER);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(11);
+    n3 = jj_consume_token(16);
     n2 = JTBToolkit.makeNodeToken(n3);
     n5 = jj_consume_token(INTEGER);
     n4 = JTBToolkit.makeNodeToken(n5);
@@ -338,15 +322,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n1 = null;
   NodeToken n2 = null;
   Token n3 = null;
-  NodeToken n4 = null;
-  Token n5 = null;
-    n1 = jj_consume_token(18);
+    n1 = jj_consume_token(17);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(11);
+    n3 = jj_consume_token(STRING);
     n2 = JTBToolkit.makeNodeToken(n3);
-    n5 = jj_consume_token(STRING);
-    n4 = JTBToolkit.makeNodeToken(n5);
-    {if (true) return new Doing(n0, n2, n4);}
+    {if (true) return new Doing(n0, n2);}
     throw new Error("Missing return statement in function");
   }
 
@@ -354,31 +334,27 @@ public class ScheduleParser implements ScheduleParserConstants {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
   Token n1 = null;
-  NodeToken n2 = null;
-  Token n3 = null;
-  Partecipant n4 = null;
-  NodeListOptional n5 = new NodeListOptional();
-  OthersPartecipants n6 = null;
-    n1 = jj_consume_token(19);
+  Partecipant n2 = null;
+  NodeListOptional n3 = new NodeListOptional();
+  OthersPartecipants n4 = null;
+    n1 = jj_consume_token(18);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(11);
-    n2 = JTBToolkit.makeNodeToken(n3);
-    n4 = Partecipant();
+    n2 = Partecipant();
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 20:
+      case 19:
         ;
         break;
       default:
         jj_la1[8] = jj_gen;
         break label_3;
       }
-      n6 = OthersPartecipants();
-      n5.addNode(n6);
+      n4 = OthersPartecipants();
+      n3.addNode(n4);
     }
-    n5.nodes.trimToSize();
-    {if (true) return new Partecipants(n0, n2, n4, n5);}
+    n3.nodes.trimToSize();
+    {if (true) return new Partecipants(n0, n2, n3);}
     throw new Error("Missing return statement in function");
   }
 
@@ -387,7 +363,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   NodeToken n0 = null;
   Token n1 = null;
   Partecipant n2 = null;
-    n1 = jj_consume_token(20);
+    n1 = jj_consume_token(19);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = Partecipant();
     {if (true) return new OthersPartecipants(n0, n2);}
@@ -425,15 +401,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
   Token n1 = null;
-  NodeToken n2 = null;
-  Token n3 = null;
-  Place n4 = null;
-    n1 = jj_consume_token(21);
+  Place n2 = null;
+    n1 = jj_consume_token(20);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(11);
-    n2 = JTBToolkit.makeNodeToken(n3);
-    n4 = Place();
-    {if (true) return new Location(n0, n2, n4);}
+    n2 = Place();
+    {if (true) return new Location(n0, n2);}
     throw new Error("Missing return statement in function");
   }
 
@@ -468,17 +440,13 @@ public class ScheduleParser implements ScheduleParserConstants {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
   Token n1 = null;
-  NodeToken n2 = null;
-  Token n3 = null;
-  RepeatingTime n4 = null;
-  RepeatingStop n5 = null;
-    n1 = jj_consume_token(22);
+  RepeatingTime n2 = null;
+  RepeatingStop n3 = null;
+    n1 = jj_consume_token(21);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(11);
-    n2 = JTBToolkit.makeNodeToken(n3);
-    n4 = RepeatingTime();
-    n5 = RepeatingStop();
-    {if (true) return new Repeating(n0, n2, n4, n5);}
+    n2 = RepeatingTime();
+    n3 = RepeatingStop();
+    {if (true) return new Repeating(n0, n2, n3);}
     throw new Error("Missing return statement in function");
   }
 
@@ -490,11 +458,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n3 = null;
   NodeToken n4 = null;
   Token n5 = null;
-    n1 = jj_consume_token(23);
+    n1 = jj_consume_token(22);
     n0 = JTBToolkit.makeNodeToken(n1);
     n3 = jj_consume_token(INTEGER);
     n2 = JTBToolkit.makeNodeToken(n3);
-    n5 = jj_consume_token(24);
+    n5 = jj_consume_token(23);
     n4 = JTBToolkit.makeNodeToken(n5);
     {if (true) return new RepeatingTime(n0, n2, n4);}
     throw new Error("Missing return statement in function");
@@ -505,7 +473,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   NodeToken n0 = null;
   Token n1 = null;
   DayDate n2 = null;
-    n1 = jj_consume_token(25);
+    n1 = jj_consume_token(24);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = DayDate();
     {if (true) return new RepeatingStop(n0, n2);}
@@ -530,10 +498,10 @@ public class ScheduleParser implements ScheduleParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x20,0x300,0x300,0x400,0x80000,0x200000,0x400000,0x18000,0x100000,0x20000000,0xa0000000,};
+      jj_la1_0 = new int[] {0x20,0x180,0x180,0x200,0x40000,0x100000,0x200000,0x6000,0x80000,0x10000000,0x50000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -671,7 +639,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[34];
+    boolean[] la1tokens = new boolean[33];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -688,7 +656,7 @@ public class ScheduleParser implements ScheduleParserConstants {
         }
       }
     }
-    for (int i = 0; i < 34; i++) {
+    for (int i = 0; i < 33; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

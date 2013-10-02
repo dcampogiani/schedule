@@ -26,7 +26,7 @@ void Declarations() : { }
 
 void TimeZoneDeclaration() : { }
 {
-	"timeZone" "=" < TIMEZONE > ";"
+	"timeZone" "=" < TIMEZONE >
 }
 
 void VariableDeclaration() : { }
@@ -36,12 +36,12 @@ void VariableDeclaration() : { }
 
 void PersonDeclaration() : { }
 {
-	"person" < ID > "=" < MAIL > ";"
+	"person" < ID > "=" < MAIL >
 }
 
 void LocationDeclaration() : { }
 {
-	"location" < ID > "=" < STRING > ";"
+	"location" < ID > "=" < STRING >
 }
 
 void Body() : { }
@@ -51,7 +51,7 @@ void Body() : { }
 
 void Day() : { }
 {
-	"on" DayDate() ":" "{" Duration() Doing() ( Partecipants() )? ( Location() )? ( Repeating() )? "}"
+	"on" DayDate() "{" Duration() Doing() ( Partecipants() )? ( Location() )? ( Repeating() )? "}"
 }
 
 void DayDate() : { }
@@ -79,12 +79,12 @@ void TimeEvent() : { }
 
 void Doing() : { }
 {
-  "do" ":" < STRING >
+  "do" < STRING >
 }
 
 void Partecipants() : { }
 {
-	"with" ":" Partecipant() ( OthersPartecipants() )*
+	"with" Partecipant() ( OthersPartecipants() )*
 }
 
 void OthersPartecipants() : { }
@@ -99,7 +99,7 @@ void Partecipant() : { }
 
 void Location() : { }
 {
-  "at" ":" Place()
+  "at" Place()
 }
 
 void Place() : { }
@@ -109,7 +109,7 @@ void Place() : { }
 
 void Repeating() : { }
 {
-	"repeating" ":" RepeatingTime() RepeatingStop()
+	"repeating" RepeatingTime() RepeatingStop()
 }
 
 void RepeatingTime() : { }
@@ -130,6 +130,6 @@ TOKEN :
  	< ID: <CHAR> (<CHAR> | <DIGIT>)*>	|
 	< TIMEZONE : (< CHAR >)+ "/" (< CHAR >)* > |
 	< STRING : "\"" < STRINGANY > "\"" > |
-	< STRINGANY : (< CHAR > | < DIGIT > | "_" )+ > |
+	< STRINGANY : (< CHAR > | < DIGIT > | "_" | "." )+ > |
 	< MAIL : "\"" < STRINGANY > "@" < STRINGANY > "." < STRINGANY > "\"" >
 }
