@@ -2,7 +2,7 @@
 import controller.IDEIController;
 import controller.ScheduleController;
 import view.IDEIView;
-import view.IDEAbstractView;
+import view.ScheduleView;
 
 
 public class MyMain {
@@ -15,9 +15,9 @@ public class MyMain {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Schedule");
 
 		
-		//IDEIController controller = new ScheduleController();
-		//IDEIView window = new IDEAbstractView(controller);
-		//controller.setView(window);
+		IDEIController controller = new ScheduleController();
+		IDEIView window = new ScheduleView(controller);
+		controller.setView(window);
 				
 	}
 
