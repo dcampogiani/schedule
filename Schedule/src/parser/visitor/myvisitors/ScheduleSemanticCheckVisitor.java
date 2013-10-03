@@ -47,6 +47,11 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	private HashMap<String, String> locations;
 	private boolean beginningDateSet;
 	private Date beginningDate;
+	private int fromH;
+	private int fromM;
+	private int toH;
+	private int toM;
+	private boolean fromTimeSet;
 
 	public ScheduleSemanticCheckVisitor(){
 		error=false;
@@ -60,10 +65,55 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(1900, 0, 1);
 		beginningDate = calendar.getTime();
+		fromH=0;
+		fromM=0;
+		toH=0;
+		toM=0;
+		fromTimeSet=false;
 	}
-
+	
+	private void setFromTimeSet(boolean v){
+		fromTimeSet=v;
+	}
+	
+	private boolean isFromTimeSet(){
+		return fromTimeSet;
+	}
+	
 	private void setBeginningDateSet(boolean v){
 		beginningDateSet = v;
+	}
+
+	public int getFromH() {
+		return fromH;
+	}
+
+	public void setFromH(int fromH) {
+		this.fromH = fromH;
+	}
+
+	public int getFromM() {
+		return fromM;
+	}
+
+	public void setFromM(int fromM) {
+		this.fromM = fromM;
+	}
+
+	public int getToH() {
+		return toH;
+	}
+
+	public void setToH(int toH) {
+		this.toH = toH;
+	}
+
+	public int getToM() {
+		return toM;
+	}
+
+	public void setToM(int toM) {
+		this.toM = toM;
 	}
 
 	private boolean isBeginningDateSet(){
@@ -314,7 +364,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 				return;
 		}
 		if (n.f7.present()){//Repeating
-			Repeating repeating = (Repeating)n.f6.node;
+			Repeating repeating = (Repeating)n.f7.node;
 			repeating.accept(this);
 			if (hasError())
 				return;
@@ -338,7 +388,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		int day = Integer.parseInt(n.f0.tokenImage);
 		if (day > 31 || day < 1){
 			error=true;
-			output= day+ "is not a valid day.";
+			output= day+ " is not a valid day.";
 			return;
 		}
 		n.f1.accept(this);
@@ -346,7 +396,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		int month = Integer.parseInt(n.f2.tokenImage);
 		if (month > 12 || month < 1){
 			error=true;
-			output= month+ "is not a valid month.";
+			output= month+ " is not a valid month.";
 			return;
 		}
 		n.f3.accept(this);
@@ -354,7 +404,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		int year = Integer.parseInt(n.f4.tokenImage);
 		if (year > 3000 || year < 1){
 			error=true;
-			output= year+ "is not a valid year.";
+			output= year+ " is not a valid year.";
 			return;
 		}
 		Calendar calendar = Calendar.getInstance();
@@ -407,15 +457,17 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(FromToDuration n) {
 		// TODO Auto-generated method stub
+		setFromTimeSet(false);
 		n.f0.accept(this);
 		n.f1.accept(this);
 		if (hasError())
 			return;
+		setFromTimeSet(true);
 		n.f2.accept(this);
 		n.f3.accept(this);
 		if (hasError())
 			return;
-
+		setFromTimeSet(false);
 	}
 
 	/**
@@ -441,6 +493,20 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			error=true;
 			output=minutes+ " are not valid minutes.";
 			return;
+		}
+		
+		if (isFromTimeSet()){
+			if ( (getFromH()>hour) || (getFromH()==hour && getFromM()>minutes ) ){
+				error=true;
+				output=getFromH()+":"+getFromM()+" is after "+hour+":"+minutes+".";
+				return;
+			}
+		}
+		
+		else{
+			setFromH(hour);
+			setFromM(minutes);
+			setFromTimeSet(true);
 		}
 	}
 
@@ -587,7 +653,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		int days = Integer.parseInt(n.f1.tokenImage);
 		if (days<1){
 			error=true;
-			output="Can't repeat event every "+ days + "days";
+			output="Can't repeat event every "+ days + " days";
 		}
 		n.f2.accept(this);
 

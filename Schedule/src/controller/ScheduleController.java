@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 import parser.ParseException;
 import parser.ScheduleParser;
 import parser.syntaxtree.Scope;
+import parser.visitor.myvisitors.ScheduleSemanticCheckVisitor;
 import view.IDEIView;
 
 public class ScheduleController implements IDEIController {
@@ -90,6 +91,13 @@ public class ScheduleController implements IDEIController {
 		try {
 			Scope scope = ScheduleParser.Scope();
 			view.appendToConsole("Sintassi OK");
+			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
+			scope.accept(semanticVisitor);
+			view.appendToConsole("Semantic Check:");
+			if (semanticVisitor.hasError())
+				view.appendToConsole(semanticVisitor.getOutput());
+			else 
+				view.appendToConsole("OK");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			view.appendToConsole(e.getMessage() );
