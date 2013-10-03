@@ -1,6 +1,8 @@
 package parser.visitor.myvisitors;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -43,7 +45,9 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	private ArrayList<String> validTimeZones;
 	private HashMap<String, String> people;
 	private HashMap<String, String> locations;
-	
+	private boolean beginningDateSet;
+	private Date beginningDate;
+
 	public ScheduleSemanticCheckVisitor(){
 		error=false;
 		output="";
@@ -52,26 +56,45 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		validTimeZones.add("Europe/London");
 		people = new HashMap<String, String>();
 		locations = new HashMap<String, String>();
+		beginningDateSet=false;
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(1900, 0, 1);
+		beginningDate = calendar.getTime();
 	}
-	
-	
+
+	private void setBeginningDateSet(boolean v){
+		beginningDateSet = v;
+	}
+
+	private boolean isBeginningDateSet(){
+		return beginningDateSet;
+	}
+
+	private void setBeginningDate(Date date){
+		beginningDate=date;
+	}
+
+	private Date getBeginningDate(){
+		return beginningDate;
+	}
+
 	public boolean hasError(){
 		return error;
 	}
-	
+
 	public String getOutput(){
 		return output;
 	}
-	
+
 	@Override
 	public void visit(NodeChoice n) {
-		// TODO Auto-generated method stub
+		n.accept(this);
 
 	}
 
 	@Override
 	public void visit(NodeList n) {
-		
+
 		for (final Iterator<INode> e = n.elements(); e.hasNext();) {
 			if(hasError()) return; 
 			else error=false;
@@ -96,8 +119,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(NodeOptional n) {
 		if (n.present()) {
-			//System.out.println("S: "+n.node);
-			//consolePrint(n.node.toString());
 			n.node.accept(this);
 			return;
 		} else
@@ -212,7 +233,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		}
 		n.f2.accept(this);
 		n.f3.accept(this);
-		people.put(n.f1.tokenImage, n.f1.tokenImage);
+		people.put(n.f1.tokenImage, n.f3.tokenImage);
 
 	}
 
@@ -268,29 +289,31 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(Day n) {
 		n.f0.accept(this);
+		setBeginningDateSet(false);
 		n.f1.accept(this); //DayDate
 		if (hasError())
 			return;
+		setBeginningDateSet(true);
 		n.f2.accept(this);
-		n.f3.accept(this);
+		n.f3.accept(this); //Duration
 		if (hasError())
 			return;
-		n.f4.accept(this);
+		n.f4.accept(this); //Doing
 		if (hasError())
 			return;
-		if (n.f5.present()){
+		if (n.f5.present()){ //Partecipants
 			Partecipants partecipants = (Partecipants)n.f5.node;
 			partecipants.accept(this);
 			if (hasError())
 				return;
 		}
-		if (n.f6.present()){
+		if (n.f6.present()){//Location
 			Location location = (Location)n.f6.node;
 			location.accept(this);
 			if (hasError())
 				return;
 		}
-		if (n.f7.present()){
+		if (n.f7.present()){//Repeating
 			Repeating repeating = (Repeating)n.f6.node;
 			repeating.accept(this);
 			if (hasError())
@@ -334,7 +357,23 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			output= year+ "is not a valid year.";
 			return;
 		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year, month-1, day);
+		Date newDate = calendar.getTime();
 
+		if (isBeginningDateSet()){
+
+			if (getBeginningDate().after(newDate) ){
+				error = true;
+				output=getBeginningDate()+ " is after "+newDate+" .";
+				return;
+			}
+		}
+
+		else {
+			setBeginningDate(newDate);
+			setBeginningDateSet(true);
+		}
 	}
 
 	/**
@@ -473,7 +512,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 				}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -563,10 +602,10 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(RepeatingStop n) {
 		n.f0.accept(this);
-		n.f1.accept(this); //da implementare che la data dopo untill deve essere successiva a quella di inizio evento
+		n.f1.accept(this);
 		if (hasError())
 			return;
-
+		setBeginningDateSet(false);
 	}
 
 }
