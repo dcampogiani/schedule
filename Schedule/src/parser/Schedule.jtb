@@ -16,7 +16,7 @@ public class ScheduleParser{  }PARSER_END(ScheduleParser)SKIP :
 
 void Scope() : { }
 {
-	Declarations() Body() < EOF >
+	Declarations() Body()
 }
 
 void Declarations() : { }

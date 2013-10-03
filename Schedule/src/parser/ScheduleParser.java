@@ -11,15 +11,9 @@ public class ScheduleParser implements ScheduleParserConstants {
   // --- JTB generated node declarations ---
   Declarations n0 = null;
   Body n1 = null;
-  NodeToken n2 = null;
-  Token n3 = null;
     n0 = Declarations();
     n1 = Body();
-    n3 = jj_consume_token(0);
-    n3.beginColumn++;
-    n3.endColumn++;
-    { n2 = JTBToolkit.makeNodeToken(n3); }
-    {if (true) return new Scope(n0, n1, n2);}
+    {if (true) return new Scope(n0, n1);}
     throw new Error("Missing return statement in function");
   }
 
