@@ -13,6 +13,7 @@ import parser.syntaxtree.DayDate;
 import parser.syntaxtree.Declarations;
 import parser.syntaxtree.Doing;
 import parser.syntaxtree.Duration;
+import parser.syntaxtree.Event;
 import parser.syntaxtree.FromToDuration;
 import parser.syntaxtree.INode;
 import parser.syntaxtree.Location;
@@ -233,7 +234,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	/**
 	 * TimeZoneDeclaration()
 	 * 
-	 * f0-> timeZone()
+	 * f0-> timeZone
 	 * f1-> =
 	 * f2-> < TIMEZONE >
 	 * @param n
@@ -328,50 +329,68 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 * 
 	 * f0-> on
 	 * f1-> DayDate()
-	 * f2-> {
-	 * f3-> Duration()
-	 * f4-> Doing()
-	 * f5-> Partecipants()
-	 * f6-> Location()
-	 * f7-> Repeating()
-	 * f8-> }
+	 * f2-> :
+	 * f3-> Event()
 	 */
 	@Override
 	public void visit(Day n) {
 		n.f0.accept(this);
 		setBeginningDateSet(false);
-		n.f1.accept(this); //DayDate
+		n.f1.accept(this);
 		if (hasError())
 			return;
 		setBeginningDateSet(true);
 		n.f2.accept(this);
-		n.f3.accept(this); //Duration
+		n.f3.accept(this);
 		if (hasError())
 			return;
-		n.f4.accept(this); //Doing
+		
+		
+	}
+
+	/**
+	 * Event()
+	 * 
+	 * f0-> {
+	 * f1-> Duration()
+	 * f2-> Doing()
+	 * f3-> Partecipants()
+	 * f4-> Location()
+	 * f5-> Repeating
+	 * f6-> }
+	 */
+	public void visit(Event n) {
+		n.f0.accept(this);
+		
+
+		n.f1.accept(this); //Duration
 		if (hasError())
 			return;
-		if (n.f5.present()){ //Partecipants
-			Partecipants partecipants = (Partecipants)n.f5.node;
+		n.f2.accept(this); //Doing
+		if (hasError())
+			return;
+		if (n.f3.present()){ //Partecipants
+			Partecipants partecipants = (Partecipants)n.f3.node;
 			partecipants.accept(this);
 			if (hasError())
 				return;
 		}
-		if (n.f6.present()){//Location
-			Location location = (Location)n.f6.node;
+		if (n.f4.present()){//Location
+			Location location = (Location)n.f4.node;
 			location.accept(this);
 			if (hasError())
 				return;
 		}
-		if (n.f7.present()){//Repeating
-			Repeating repeating = (Repeating)n.f7.node;
+		if (n.f5.present()){//Repeating
+			Repeating repeating = (Repeating)n.f5.node;
 			repeating.accept(this);
 			if (hasError())
 				return;
 		}
-		n.f8.accept(this);
+		n.f6.accept(this);
+		
 	}
-
+	
 	/**
 	 * DayDate()
 	 * 
@@ -673,5 +692,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			return;
 		setBeginningDateSet(false);
 	}
+
+
 
 }

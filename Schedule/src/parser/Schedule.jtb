@@ -51,8 +51,12 @@ void Body() : { }
 
 void Day() : { }
 {
-	"on" DayDate() "{" Duration() Doing() ( Partecipants() )? ( Location() )? ( Repeating() )? "}"
+	"on" DayDate() ":" ( Event() )+
 }
+
+void Event() :{ }
+{
+  "{" Duration() Doing() ( Partecipants() )? ( Location() )? ( Repeating() )? "}"}
 
 void DayDate() : { }
 {

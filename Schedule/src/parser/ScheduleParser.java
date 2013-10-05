@@ -165,53 +165,79 @@ public class ScheduleParser implements ScheduleParserConstants {
   DayDate n2 = null;
   NodeToken n3 = null;
   Token n4 = null;
-  Duration n5 = null;
-  Doing n6 = null;
-  NodeOptional n7 = new NodeOptional();
-  Partecipants n8 = null;
-  NodeOptional n9 = new NodeOptional();
-  Location n10 = null;
-  NodeOptional n11 = new NodeOptional();
-  Repeating n12 = null;
-  NodeToken n13 = null;
-  Token n14 = null;
+  NodeList n5 = new NodeList();
+  Event n6 = null;
     n1 = jj_consume_token(9);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = DayDate();
     n4 = jj_consume_token(10);
     n3 = JTBToolkit.makeNodeToken(n4);
-    n5 = Duration();
-    n6 = Doing();
+    label_3:
+    while (true) {
+      n6 = Event();
+      n5.addNode(n6);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 11:
+        ;
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        break label_3;
+      }
+    }
+    n5.nodes.trimToSize();
+    {if (true) return new Day(n0, n2, n3, n5);}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public Event Event() throws ParseException {
+  // --- JTB generated node declarations ---
+  NodeToken n0 = null;
+  Token n1 = null;
+  Duration n2 = null;
+  Doing n3 = null;
+  NodeOptional n4 = new NodeOptional();
+  Partecipants n5 = null;
+  NodeOptional n6 = new NodeOptional();
+  Location n7 = null;
+  NodeOptional n8 = new NodeOptional();
+  Repeating n9 = null;
+  NodeToken n10 = null;
+  Token n11 = null;
+    n1 = jj_consume_token(11);
+    n0 = JTBToolkit.makeNodeToken(n1);
+    n2 = Duration();
+    n3 = Doing();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 18:
-      n8 = Partecipants();
-      n7.addNode(n8);
-      break;
-    default:
-      jj_la1[4] = jj_gen;
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 20:
-      n10 = Location();
-      n9.addNode(n10);
+      n5 = Partecipants();
+      n4.addNode(n5);
       break;
     default:
       jj_la1[5] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 21:
-      n12 = Repeating();
-      n11.addNode(n12);
+    case 20:
+      n7 = Location();
+      n6.addNode(n7);
       break;
     default:
       jj_la1[6] = jj_gen;
       ;
     }
-    n14 = jj_consume_token(11);
-    n13 = JTBToolkit.makeNodeToken(n14);
-    {if (true) return new Day(n0, n2, n3, n5, n6, n7, n9, n11, n13);}
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 21:
+      n9 = Repeating();
+      n8.addNode(n9);
+      break;
+    default:
+      jj_la1[7] = jj_gen;
+      ;
+    }
+    n11 = jj_consume_token(12);
+    n10 = JTBToolkit.makeNodeToken(n11);
+    {if (true) return new Event(n0, n2, n3, n4, n6, n8, n10);}
     throw new Error("Missing return statement in function");
   }
 
@@ -229,11 +255,11 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n9 = null;
     n1 = jj_consume_token(INTEGER);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(12);
+    n3 = jj_consume_token(13);
     n2 = JTBToolkit.makeNodeToken(n3);
     n5 = jj_consume_token(INTEGER);
     n4 = JTBToolkit.makeNodeToken(n5);
-    n7 = jj_consume_token(12);
+    n7 = jj_consume_token(13);
     n6 = JTBToolkit.makeNodeToken(n7);
     n9 = jj_consume_token(INTEGER);
     n8 = JTBToolkit.makeNodeToken(n9);
@@ -247,16 +273,16 @@ public class ScheduleParser implements ScheduleParserConstants {
   AllDayDuration n1 = null;
   FromToDuration n2 = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 13:
+    case 14:
       n1 = AllDayDuration();
       n0 = new NodeChoice(n1, 0, 2);
       break;
-    case 14:
+    case 15:
       n2 = FromToDuration();
       n0 = new NodeChoice(n2, 1, 2);
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -268,7 +294,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   // --- JTB generated node declarations ---
   NodeToken n0 = null;
   Token n1 = null;
-    n1 = jj_consume_token(13);
+    n1 = jj_consume_token(14);
     n0 = JTBToolkit.makeNodeToken(n1);
     {if (true) return new AllDayDuration(n0);}
     throw new Error("Missing return statement in function");
@@ -282,10 +308,10 @@ public class ScheduleParser implements ScheduleParserConstants {
   NodeToken n3 = null;
   Token n4 = null;
   TimeEvent n5 = null;
-    n1 = jj_consume_token(14);
+    n1 = jj_consume_token(15);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = TimeEvent();
-    n4 = jj_consume_token(15);
+    n4 = jj_consume_token(16);
     n3 = JTBToolkit.makeNodeToken(n4);
     n5 = TimeEvent();
     {if (true) return new FromToDuration(n0, n2, n3, n5);}
@@ -302,7 +328,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   Token n5 = null;
     n1 = jj_consume_token(INTEGER);
     n0 = JTBToolkit.makeNodeToken(n1);
-    n3 = jj_consume_token(16);
+    n3 = jj_consume_token(10);
     n2 = JTBToolkit.makeNodeToken(n3);
     n5 = jj_consume_token(INTEGER);
     n4 = JTBToolkit.makeNodeToken(n5);
@@ -334,15 +360,15 @@ public class ScheduleParser implements ScheduleParserConstants {
     n1 = jj_consume_token(18);
     n0 = JTBToolkit.makeNodeToken(n1);
     n2 = Partecipant();
-    label_3:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 19:
         ;
         break;
       default:
-        jj_la1[8] = jj_gen;
-        break label_3;
+        jj_la1[9] = jj_gen;
+        break label_4;
       }
       n4 = OthersPartecipants();
       n3.addNode(n4);
@@ -383,7 +409,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n0 = new NodeChoice(n3, 1, 2);
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -422,7 +448,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n0 = new NodeChoice(n3, 1, 2);
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -484,7 +510,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[11];
+  static final private int[] jj_la1 = new int[12];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -492,10 +518,10 @@ public class ScheduleParser implements ScheduleParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x20,0x180,0x180,0x200,0x40000,0x100000,0x200000,0x6000,0x80000,0x10000000,0x50000000,};
+      jj_la1_0 = new int[] {0x20,0x180,0x180,0x200,0x800,0x40000,0x100000,0x200000,0xc000,0x80000,0x10000000,0x50000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -516,7 +542,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -530,7 +556,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -547,7 +573,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -557,7 +583,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -573,7 +599,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -582,7 +608,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -638,7 +664,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 12; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
