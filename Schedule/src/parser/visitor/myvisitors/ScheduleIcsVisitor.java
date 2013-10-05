@@ -1,11 +1,26 @@
 package parser.visitor.myvisitors;
 
+import java.net.SocketException;
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.Role;
+import net.fortuna.ical4j.model.property.Attendee;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.util.UidGenerator;
 import parser.syntaxtree.AllDayDuration;
 import parser.syntaxtree.Body;
 import parser.syntaxtree.Day;
@@ -39,51 +54,175 @@ import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
 import parser.visitor.IVoidVisitor;
 
-public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
+public class ScheduleIcsVisitor implements IVoidVisitor {
 
-	private boolean error;
 	private String output;
-	private ArrayList<String> validTimeZones;
+	private net.fortuna.ical4j.model.Calendar icsCalendar;
 	private HashMap<String, String> people;
 	private HashMap<String, String> locations;
-	private boolean beginningDateSet;
-	private Date beginningDate;
+	private TimeZone timezone;
+	private VTimeZone vtTimeZone;
+	private boolean timeZoneset;
 	private int fromH;
 	private int fromM;
 	private int toH;
 	private int toM;
 	private boolean fromTimeSet;
+	private int beginningDay;
+	private int beginnigMonth;
+	private int beginningYear;
+	private boolean beginningDateSet;
+	private int endingDay;
+	private int endingMonth;
+	private int endingYear;
+	private ArrayList<VEvent> events;
+	private String lastDoing;
+	private String lastLocation;
+	private ArrayList<String> participants;
+	private boolean repeatingSet;
+	private int repeatingIntervall;
 
-	public ScheduleSemanticCheckVisitor(){
-		error=false;
+	public ScheduleIcsVisitor(){
+		icsCalendar = new net.fortuna.ical4j.model.Calendar();
+		icsCalendar.getProperties().add(new ProdId("-//Daniele Campogiani//Schedule 1.0//EN"));
+		icsCalendar.getProperties().add(Version.VERSION_2_0);
+		icsCalendar.getProperties().add(CalScale.GREGORIAN);
 		output="";
-		validTimeZones = new ArrayList<String>();
-		validTimeZones.add("Europe/Rome");
-		validTimeZones.add("Europe/London");
-		people = new HashMap<String, String>();
+		people= new HashMap<String, String>();
 		locations = new HashMap<String, String>();
-		beginningDateSet=false;
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(1900, 0, 1);
-		beginningDate = calendar.getTime();
+		timeZoneset = false;
 		fromH=0;
 		fromM=0;
 		toH=0;
 		toM=0;
 		fromTimeSet=false;
+		beginningDay=0;
+		beginnigMonth=0;
+		beginningYear=0;
+		beginningDateSet=false;
+		endingDay=0;
+		endingMonth=0;
+		endingYear=0;
+		events = new ArrayList<VEvent>();
+		lastDoing="";
+		lastLocation="";
+		participants = new ArrayList<String>();
+		repeatingSet=false;
+		repeatingIntervall=0;
+	}
+
+	private int getRepeatingIntervall(){
+		return repeatingIntervall;
 	}
 	
-	private void setFromTimeSet(boolean v){
-		fromTimeSet=v;
+	private void setRepeatingIntervall(int value){
+		repeatingIntervall=value;
 	}
 	
-	private boolean isFromTimeSet(){
-		return fromTimeSet;
+	private boolean isRepeatingSet(){
+		return repeatingSet;
 	}
 	
+	private void setRepeatingSet(boolean v) {
+		repeatingSet = v;
+	}
+	
+	private ArrayList<String> getLastParticipants() {
+		return participants;
+	}
+	
+	private String getLastLocation() {
+		return ""+lastLocation;
+	}
+	
+	private void setLastLocation(String location){
+		lastLocation=location;
+	}
+	
+	private String getLastDoing(){
+		return ""+lastDoing;
+	}
+	
+	private void setLastDoing(String doing) {
+		lastDoing=doing;
+	}
+	
+	private ArrayList<VEvent> getEvents(){
+		return events;
+	}
+	
+	public int getBeginningDay() {
+		return beginningDay;
+	}
+
+	public void setBeginningDay(int beginningDay) {
+		this.beginningDay = beginningDay;
+	}
+
+	public int getBeginnigMonth() {
+		return beginnigMonth;
+	}
+
+	public void setBeginnigMonth(int beginnigMonth) {
+		this.beginnigMonth = beginnigMonth;
+	}
+
+	public int getBeginningYear() {
+		return beginningYear;
+	}
+
+	public void setBeginningYear(int beginningYear) {
+		this.beginningYear = beginningYear;
+	}
+
+	public int getEndingDay() {
+		return endingDay;
+	}
+
+	public void setEndingDay(int endingDay) {
+		this.endingDay = endingDay;
+	}
+
+	public int getEndingMonth() {
+		return endingMonth;
+	}
+
+	public void setEndingMonth(int endingMonth) {
+		this.endingMonth = endingMonth;
+	}
+
+	public int getEndingYear() {
+		return endingYear;
+	}
+
+	public void setEndingYear(int endingYear) {
+		this.endingYear = endingYear;
+	}
+
 	private void setBeginningDateSet(boolean v){
 		beginningDateSet = v;
 	}
+
+	private boolean isBeginningDateSet(){
+		return beginningDateSet;
+	}
+
+	private void setFromTimeSet(boolean v){
+		fromTimeSet=v;
+	}
+
+	private boolean isFromTimeSet(){
+		return fromTimeSet;
+	}
+
+	private void setTimeZoneSet(boolean v){
+		timeZoneset=v;
+	}
+
+	private boolean isTimeZoneSet(){
+		return timeZoneset;
+	}
+
 
 	public int getFromH() {
 		return fromH;
@@ -117,22 +256,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		this.toM = toM;
 	}
 
-	private boolean isBeginningDateSet(){
-		return beginningDateSet;
-	}
-
-	private void setBeginningDate(Date date){
-		beginningDate=date;
-	}
-
-	private Date getBeginningDate(){
-		return beginningDate;
-	}
-
-	public boolean hasError(){
-		return error;
-	}
-
 	public String getOutput(){
 		return output;
 	}
@@ -140,15 +263,12 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(NodeChoice n) {
 		n.accept(this);
-
+		return;
 	}
 
 	@Override
 	public void visit(NodeList n) {
-
 		for (final Iterator<INode> e = n.elements(); e.hasNext();) {
-			if(hasError()) return; 
-			else error=false;
 			e.next().accept(this);
 		}
 		return;
@@ -194,6 +314,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		// TODO Auto-generated method stub
 
 	}
+
 	/**
 	 * Scope()
 	 * 
@@ -202,14 +323,10 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(Scope n) {
-		// TODO Auto-generated method stub
 		n.f0.accept(this); //Declarations
-		if (hasError())
-			return;
 		n.f1.accept(this);
-		if (hasError())
-			return;
-		output="Semantic Check : OK";
+		output=icsCalendar.toString();
+
 	}
 
 	/**
@@ -223,13 +340,11 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		if (n.f0.present()){ //TimeZoneDeclaration
 			TimeZoneDeclaration tzd = (TimeZoneDeclaration)n.f0.node;
 			tzd.accept(this);
-			if (hasError())
-				return;
 		}
 		n.f1.accept(this); //VariableDeclaration
-		if (hasError())
-			return;
+
 	}
+
 
 	/**
 	 * TimeZoneDeclaration()
@@ -239,16 +354,16 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 * f2-> < TIMEZONE >
 	 * @param n
 	 */
-	@Override
 	public void visit(TimeZoneDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
 		n.f2.accept(this);
-		if (!validTimeZones.contains(n.f2.tokenImage)){
-			error=true;
-			output="Invalid TimeZone.";
-			return;
-		}
+
+		setTimeZoneSet(true);
+
+		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+		timezone = registry.getTimeZone(n.f2.tokenImage);
+		vtTimeZone = timezone.getVTimeZone();
 
 	}
 
@@ -277,11 +392,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(PersonDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (people.containsKey(n.f1.tokenImage)){
-			error=true;
-			output = "Person "+ n.f1.tokenImage +" already defined.";
-			return;
-		}
 		n.f2.accept(this);
 		n.f3.accept(this);
 		people.put(n.f1.tokenImage, n.f3.tokenImage);
@@ -300,11 +410,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(LocationDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (locations.containsKey(n.f1.tokenImage)){
-			error = true;
-			output = "Location " + n.f1.tokenImage+ " already defined.";
-			return;
-		}
 		n.f2.accept(this);
 		n.f3.accept(this);
 		locations.put(n.f1.tokenImage, n.f3.tokenImage);
@@ -320,8 +425,10 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(Body n) {
 		n.f0.accept(this);
-		if (hasError())
-			return;
+		
+		for (VEvent current: getEvents())
+			icsCalendar.getComponents().add(current);
+
 	}
 
 	/**
@@ -337,13 +444,11 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		n.f0.accept(this);
 		setBeginningDateSet(false);
 		n.f1.accept(this);
-		if (hasError())
-			return;
+
 		setBeginningDateSet(true);
 		n.f2.accept(this);
 		n.f3.accept(this);
-		if (hasError())
-			return;	
+
 	}
 
 	/**
@@ -358,37 +463,85 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 * f6-> }
 	 */
 	public void visit(Event n) {
+		// TODO Auto-generated method stub
 		n.f0.accept(this);
-		
-
 		n.f1.accept(this); //Duration
-		if (hasError())
-			return;
+
 		n.f2.accept(this); //Doing
-		if (hasError())
-			return;
+
 		if (n.f3.present()){ //Partecipants
 			Partecipants partecipants = (Partecipants)n.f3.node;
 			partecipants.accept(this);
-			if (hasError())
-				return;
+
 		}
 		if (n.f4.present()){//Location
 			Location location = (Location)n.f4.node;
 			location.accept(this);
-			if (hasError())
-				return;
+
 		}
 		if (n.f5.present()){//Repeating
 			Repeating repeating = (Repeating)n.f5.node;
 			repeating.accept(this);
-			if (hasError())
-				return;
+
 		}
 		n.f6.accept(this);
+
+		java.util.Calendar startDate = new GregorianCalendar();
+		if (isTimeZoneSet())
+			startDate.setTimeZone(timezone);
+		startDate.set(java.util.Calendar.MONTH, getBeginnigMonth()-1);
+		startDate.set(java.util.Calendar.DAY_OF_MONTH, getBeginningDay());
+		startDate.set(java.util.Calendar.YEAR, getBeginningYear());
+		startDate.set(java.util.Calendar.HOUR_OF_DAY, getFromH());
+		startDate.set(java.util.Calendar.MINUTE, getFromM());
+		startDate.set(java.util.Calendar.SECOND, 0);
 		
-	}
+		
+		java.util.Calendar endDate = new GregorianCalendar();
+		if (isTimeZoneSet())
+			endDate.setTimeZone(timezone);
+		endDate.set(java.util.Calendar.MONTH, getBeginnigMonth()-1);
+		endDate.set(java.util.Calendar.DAY_OF_MONTH, getBeginningDay());
+		endDate.set(java.util.Calendar.YEAR, getBeginningYear());
+		endDate.set(java.util.Calendar.HOUR_OF_DAY, getToH());
+		endDate.set(java.util.Calendar.MINUTE, getToM());	
+		endDate.set(java.util.Calendar.SECOND, 0);
+		
+		String doing = getLastDoing();
+		
+		DateTime start = new DateTime(startDate.getTime());
+		DateTime end = new DateTime(endDate.getTime());
+		VEvent event = new VEvent(start, end, doing);
+		
+		if (isTimeZoneSet())
+			event.getProperties().add(vtTimeZone.getTimeZoneId());
 	
+		
+		UidGenerator ug = null;
+		try {
+			ug = new UidGenerator("uidGen");
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Uid uid = ug.generateUid();
+		event.getProperties().add(uid);
+		
+		for (String participant: getLastParticipants()){
+			Attendee partecipante = new Attendee(URI.create(participant));
+			partecipante.getParameters().add(Role.REQ_PARTICIPANT);
+			partecipante.getParameters().add(new Cn(participant));
+			event.getProperties().add(partecipante);
+		}
+		
+		participants.clear();
+		
+		net.fortuna.ical4j.model.property.Location location = new net.fortuna.ical4j.model.property.Location( getLastLocation());
+		event.getProperties().add(location);
+		
+		getEvents().add(event);
+	}
+
 	/**
 	 * DayDate()
 	 * 
@@ -400,47 +553,30 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(DayDate n) {
-		// TODO Auto-generated method stub
 		n.f0.accept(this);
 		int day = Integer.parseInt(n.f0.tokenImage);
-		if (day > 31 || day < 1){
-			error=true;
-			output= day+ " is not a valid day.";
-			return;
-		}
+
 		n.f1.accept(this);
 		n.f2.accept(this);
 		int month = Integer.parseInt(n.f2.tokenImage);
-		if (month > 12 || month < 1){
-			error=true;
-			output= month+ " is not a valid month.";
-			return;
-		}
+
 		n.f3.accept(this);
 		n.f4.accept(this);
 		int year = Integer.parseInt(n.f4.tokenImage);
-		if (year > 3000 || year < 1){
-			error=true;
-			output= year+ " is not a valid year.";
-			return;
-		}
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(year, month-1, day);
-		Date newDate = calendar.getTime();
-
-		if (isBeginningDateSet()){
-
-			if (getBeginningDate().after(newDate) ){
-				error = true;
-				output=getBeginningDate()+ " is after "+newDate+" .";
-				return;
-			}
-		}
-
-		else {
-			setBeginningDate(newDate);
+		
+		if (!beginningDateSet){
+			setBeginningDay(day);
+			setBeginnigMonth(month);
+			setBeginningYear(year);
 			setBeginningDateSet(true);
 		}
+		
+		else {
+			setEndingDay(day);
+			setEndingMonth(month);
+			setEndingYear(year);
+		}
+
 	}
 
 	/**
@@ -451,6 +587,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(Duration n) {
 		n.f0.accept(this);
+
 	}
 
 	/**
@@ -461,6 +598,12 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(AllDayDuration n) {
 		n.f0.accept(this);
+		setFromH(0);
+		setFromM(0);
+		setFromTimeSet(true);
+		setToH(23);
+		setToM(59);
+
 	}
 
 	/**
@@ -473,18 +616,14 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(FromToDuration n) {
-		// TODO Auto-generated method stub
 		setFromTimeSet(false);
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (hasError())
-			return;
 		setFromTimeSet(true);
 		n.f2.accept(this);
 		n.f3.accept(this);
-		if (hasError())
-			return;
 		setFromTimeSet(false);
+
 	}
 
 	/**
@@ -498,33 +637,22 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(TimeEvent n) {
 		n.f0.accept(this);
 		int hour = Integer.parseInt(n.f0.tokenImage);
-		if (hour>23 || hour<0){
-			error=true;
-			output=hour+" is not a valid hour.";
-			return;
-		}
+
 		n.f1.accept(this);
 		n.f2.accept(this);
 		int minutes = Integer.parseInt(n.f2.tokenImage);
-		if (minutes>59 || minutes <0){
-			error=true;
-			output=minutes+ " are not valid minutes.";
-			return;
-		}
+
 		
-		if (isFromTimeSet()){
-			if ( (getFromH()>hour) || (getFromH()==hour && getFromM()>minutes ) ){
-				error=true;
-				output=getFromH()+":"+getFromM()+" is after "+hour+":"+minutes+".";
-				return;
-			}
+		if (!isFromTimeSet()){
+			setFromH(hour);
+			setFromM(minutes);
 		}
 		
 		else{
-			setFromH(hour);
-			setFromM(minutes);
-			setFromTimeSet(true);
+			setToH(hour);
+			setToM(minutes);
 		}
+
 	}
 
 	/**
@@ -537,6 +665,8 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(Doing n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
+		setLastDoing(n.f1.tokenImage);
+
 	}
 
 	/**
@@ -548,14 +678,9 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(Partecipants n) {
-		// TODO Auto-generated method stub
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (hasError())
-			return;
 		n.f2.accept(this);
-		if (hasError())
-			return;
 
 	}
 
@@ -569,8 +694,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(OthersPartecipants n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (hasError())
-			return;
+
 	}
 
 	/**
@@ -585,14 +709,11 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			NodeToken token = (NodeToken) n.f0.choice;
 			if (token.tokenImage.startsWith("\"")){
 				//caso mail
+				getLastParticipants().add(token.tokenImage);
 			}
 			else{
 				//caso id
-				if (!people.containsKey(token.tokenImage)){
-					error=true;
-					output= token.tokenImage+" is not a defined person.";
-					return;
-				}
+				getLastParticipants().add(people.get(token.tokenImage));
 			}
 		}
 
@@ -608,8 +729,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(Location n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (hasError())
-			return;
+
 	}
 
 	/**
@@ -623,15 +743,10 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		if (n.f0.choice instanceof NodeToken){
 			NodeToken token = (NodeToken)n.f0.choice;
 			if (token.tokenImage.startsWith("\"")){
-				//caso stringa
+				setLastLocation(token.tokenImage);
 			}
 			else{
-				//caso id
-				if (!locations.containsKey(token.tokenImage)){
-					error=true;
-					output=token.tokenImage+ " is not a defined location";
-					return;
-				}
+				setLastLocation(locations.get(token.tokenImage));
 			}
 		}
 
@@ -647,12 +762,9 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	@Override
 	public void visit(Repeating n) {
 		n.f0.accept(this);
+		setRepeatingSet(true);
 		n.f1.accept(this);
-		if (hasError())
-			return;
 		n.f2.accept(this);
-		if (hasError())
-			return;
 
 	}
 
@@ -668,10 +780,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		n.f0.accept(this);
 		n.f1.accept(this);
 		int days = Integer.parseInt(n.f1.tokenImage);
-		if (days<1){
-			error=true;
-			output="Can't repeat event every "+ days + " days";
-		}
+		setRepeatingIntervall(days);
 		n.f2.accept(this);
 
 	}
@@ -686,11 +795,8 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(RepeatingStop n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (hasError())
-			return;
 		setBeginningDateSet(false);
+
 	}
-
-
 
 }
