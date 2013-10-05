@@ -210,7 +210,7 @@ public abstract class IDEAbstractView implements IDEIView{
 		console.append(text+System.getProperty("line.separator"));
 	}
 
-	public void addNewFile(String fileName, String fileContent, String filePath){
+	protected void addNewFile(String fileName, String fileContent, String filePath){
 		JScrollPane scrollPane = new JScrollPane();
 		if ( fileName==null || fileName.equals(""))
 			fileName = "New File";
@@ -236,7 +236,7 @@ public abstract class IDEAbstractView implements IDEIView{
 		currentTextChanged(editor.getText());
 	}
 
-	public void openFile(){
+	protected void openFile(){
 
 		int returnvalue = getFileChooser().showOpenDialog(frame);
 		File file = null;
@@ -275,8 +275,11 @@ public abstract class IDEAbstractView implements IDEIView{
 
 	}
 
-	public void saveFile(){
+	protected void saveFile(){
 
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(getLanguageName()+" source code", getFileExtension());
+		getFileChooser().setFileFilter(filter);
+		
 		JScrollPane scrollPane = (JScrollPane) tabbedPane.getSelectedComponent();
 		JViewport viewport = scrollPane.getViewport();
 		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
@@ -323,7 +326,7 @@ public abstract class IDEAbstractView implements IDEIView{
 		}
 	}
 
-	public void closeCurrentFile(){
+	protected void closeCurrentFile(){
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
@@ -344,6 +347,49 @@ public abstract class IDEAbstractView implements IDEIView{
 		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
 		return editor.getText();
 
+	}
+	
+	public void saveToFile(String content, String description, String extension){
+		Boolean aborted = false;
+		File file = null;
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(description, extension);
+		getFileChooser().setFileFilter(filter);
+		
+		int returnValue = getFileChooser().showSaveDialog(frame);
+		aborted = true;
+		if (returnValue == JFileChooser.APPROVE_OPTION){
+			String path = getFileChooser().getSelectedFile().getAbsolutePath();
+			if (!path.endsWith(extension))
+				path+="."+extension;
+			file = new File(path);
+			aborted = false;
+
+		}
+		
+		if (aborted)
+			return;
+
+		int response = JOptionPane.OK_OPTION;
+		if (file.exists())
+			response = JOptionPane.showConfirmDialog(null,"Confirm Overwrite?","Existing file",JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+		if (response!= JOptionPane.CANCEL_OPTION){
+			try {
+				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+				out.print(content);
+				out.flush();
+				out.close();
+				appendToConsole("Salvato "+ file.getName()+ " in "+ file.getAbsolutePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				appendToConsole("Errore nel salvataggio del file:");
+				appendToConsole(e.toString());
+			}
+		}
+		
+		
+
+		
 	}
 
 }

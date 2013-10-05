@@ -10,10 +10,7 @@ public interface IDEIView {
 	public void appendToConsole(String text);
 	public void clearTree();
 	public void setTree(JTree tree);
-	public void addNewFile(String fileName, String fileContent, String filePath);
-	public void openFile();
-	public void saveFile();
-	public void closeCurrentFile();
 	public void setController(IDEIController controller);
 	public String getCurrentSource();
+	public void saveToFile(String content, String description, String extension);
 }

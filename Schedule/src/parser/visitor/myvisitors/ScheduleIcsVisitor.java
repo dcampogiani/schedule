@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
@@ -18,6 +19,7 @@ import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.UidGenerator;
@@ -81,10 +83,11 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	private ArrayList<String> participants;
 	private boolean repeatingSet;
 	private int repeatingIntervall;
+	private boolean locationSet;
 
 	public ScheduleIcsVisitor(){
 		icsCalendar = new net.fortuna.ical4j.model.Calendar();
-		icsCalendar.getProperties().add(new ProdId("-//Daniele Campogiani//Schedule 1.0//EN"));
+		//icsCalendar.getProperties().add(new ProdId("-//Events Calendar//iCal4j 1.0//EN"));
 		icsCalendar.getProperties().add(Version.VERSION_2_0);
 		icsCalendar.getProperties().add(CalScale.GREGORIAN);
 		output="";
@@ -109,8 +112,17 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		participants = new ArrayList<String>();
 		repeatingSet=false;
 		repeatingIntervall=0;
+		locationSet = false;
 	}
 
+	private void setLocationSet(boolean v){
+		locationSet = v;
+	}
+	
+	private boolean isLocationSet(){
+		return locationSet;
+	}
+	
 	private int getRepeatingIntervall(){
 		return repeatingIntervall;
 	}
@@ -222,7 +234,6 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	private boolean isTimeZoneSet(){
 		return timeZoneset;
 	}
-
 
 	public int getFromH() {
 		return fromH;
@@ -394,7 +405,9 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		n.f1.accept(this);
 		n.f2.accept(this);
 		n.f3.accept(this);
-		people.put(n.f1.tokenImage, n.f3.tokenImage);
+		String sub = n.f3.tokenImage.substring(1, n.f3.tokenImage.length()-1);
+
+		people.put(n.f1.tokenImage, sub);
 
 	}
 
@@ -412,7 +425,8 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		n.f1.accept(this);
 		n.f2.accept(this);
 		n.f3.accept(this);
-		locations.put(n.f1.tokenImage, n.f3.tokenImage);
+		String sub = n.f3.tokenImage.substring(1, n.f3.tokenImage.length()-1);
+		locations.put(n.f1.tokenImage, sub);
 
 	}
 
@@ -474,6 +488,7 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 			partecipants.accept(this);
 
 		}
+		setLocationSet(false);
 		if (n.f4.present()){//Location
 			Location location = (Location)n.f4.node;
 			location.accept(this);
@@ -536,8 +551,29 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		
 		participants.clear();
 		
-		net.fortuna.ical4j.model.property.Location location = new net.fortuna.ical4j.model.property.Location( getLastLocation());
-		event.getProperties().add(location);
+		if (isLocationSet()){
+			net.fortuna.ical4j.model.property.Location location = new net.fortuna.ical4j.model.property.Location( getLastLocation());
+			event.getProperties().add(location);
+		}
+		
+		if (isRepeatingSet()){
+			
+			java.util.Calendar stopDate = new GregorianCalendar();
+			stopDate.set(java.util.Calendar.MONTH, getEndingMonth()-1);
+			stopDate.set(java.util.Calendar.DAY_OF_MONTH, getEndingDay());
+			stopDate.set(java.util.Calendar.YEAR, getEndingYear());
+			stopDate.set(java.util.Calendar.HOUR_OF_DAY, getToH());
+			stopDate.set(java.util.Calendar.MINUTE, getToM());	
+			stopDate.set(java.util.Calendar.SECOND, 0);
+			
+			DateTime stop = new DateTime(stopDate.getTime());
+			
+			Recur recur = new Recur(Recur.DAILY,null);
+			recur.setUntil(stop);
+			recur.setInterval(getRepeatingIntervall());
+			RRule rule = new RRule(recur);
+			event.getProperties().add(rule);
+		}
 		
 		getEvents().add(event);
 	}
@@ -665,7 +701,8 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	public void visit(Doing n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		setLastDoing(n.f1.tokenImage);
+		String sub = n.f1.tokenImage.substring(1, n.f1.tokenImage.length()-1);
+		setLastDoing(sub);
 
 	}
 
@@ -709,7 +746,8 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 			NodeToken token = (NodeToken) n.f0.choice;
 			if (token.tokenImage.startsWith("\"")){
 				//caso mail
-				getLastParticipants().add(token.tokenImage);
+				String sub = token.tokenImage.substring(1, token.tokenImage.length()-1);
+				getLastParticipants().add(sub);
 			}
 			else{
 				//caso id
@@ -729,6 +767,7 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	public void visit(Location n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
+		setLocationSet(true);
 
 	}
 
@@ -743,7 +782,8 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		if (n.f0.choice instanceof NodeToken){
 			NodeToken token = (NodeToken)n.f0.choice;
 			if (token.tokenImage.startsWith("\"")){
-				setLastLocation(token.tokenImage);
+				String sub = token.tokenImage.substring(1, token.tokenImage.length()-1);
+				setLastLocation(sub);
 			}
 			else{
 				setLastLocation(locations.get(token.tokenImage));

@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -15,6 +16,7 @@ import javax.swing.KeyStroke;
 import parser.ParseException;
 import parser.ScheduleParser;
 import parser.syntaxtree.Scope;
+import parser.visitor.myvisitors.ScheduleIcsVisitor;
 import parser.visitor.myvisitors.ScheduleSemanticCheckVisitor;
 import view.IDEIView;
 
@@ -25,6 +27,7 @@ public class ScheduleController implements IDEIController {
 	private IDEIView view;
 	boolean parserInit=false;
 	private ScheduleParser parser;
+	private JFileChooser fileChooser;
 
 	public ScheduleController(){
 
@@ -53,6 +56,13 @@ public class ScheduleController implements IDEIController {
 		separators.add(System.getProperty("line.separator"));
 		separators.add("\t");
 
+	}
+	
+	protected JFileChooser getFileChooser(){
+		if (fileChooser == null){
+			fileChooser = new JFileChooser();
+		}
+		return fileChooser;
 	}
 
 	@Override
@@ -136,8 +146,40 @@ public class ScheduleController implements IDEIController {
 	}
 
 	private void generateIcall(){
+		view.clearConsole();
+		StringReader reader = new StringReader(view.getCurrentSource());
+		BufferedReader buff = new BufferedReader(reader);
+		
+		if(!parserInit)
+			parser= new ScheduleParser(buff);
+		else 
+			ScheduleParser.ReInit(buff);
+		parserInit=true;
+		try {
+			Scope scope = ScheduleParser.Scope();
+			//view.appendToConsole("Sintassi OK");
+			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
+			scope.accept(semanticVisitor);
+			//view.appendToConsole("Semantic Check:");
+			if (semanticVisitor.hasError())
+				view.appendToConsole(semanticVisitor.getOutput());
+			//else 
+				//view.appendToConsole("OK");
+			ScheduleIcsVisitor icsVisitor = new ScheduleIcsVisitor();
+			scope.accept(icsVisitor);
+			saveToFile(icsVisitor.getOutput(), "iCalendar", "ics");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			view.appendToConsole(e.getMessage() );
+		} 
+		
 	}
 
 	private void sendMails(){
 	}
+	
+	private void saveToFile(String content, String description, String extension){
+		view.saveToFile(content, description, extension);
+	}
+	
 }
