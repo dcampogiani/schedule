@@ -1,11 +1,15 @@
 package parser.visitor.myvisitors;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
@@ -55,11 +59,13 @@ import parser.syntaxtree.TimeEvent;
 import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
 import parser.visitor.IVoidVisitor;
+import util.MailSender;
 
-public class ScheduleIcsVisitor implements IVoidVisitor {
-
-	private String output;
-	private net.fortuna.ical4j.model.Calendar icsCalendar;
+public class ScheduleMailVisitor implements IVoidVisitor {
+	
+	private String username;
+	private String password;
+	
 	private HashMap<String, String> people;
 	private HashMap<String, String> locations;
 	private TimeZone timezone;
@@ -77,20 +83,16 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	private int endingDay;
 	private int endingMonth;
 	private int endingYear;
-	private ArrayList<VEvent> events;
 	private String lastDoing;
 	private String lastLocation;
 	private ArrayList<String> participants;
 	private boolean repeatingSet;
 	private int repeatingIntervall;
 	private boolean locationSet;
-
-	public ScheduleIcsVisitor(){
-		icsCalendar = new net.fortuna.ical4j.model.Calendar();
-		icsCalendar.getProperties().add(new ProdId("-//Daniele Campogiani//schedule 1.0//EN"));
-		icsCalendar.getProperties().add(Version.VERSION_2_0);
-		icsCalendar.getProperties().add(CalScale.GREGORIAN);
-		output="";
+	private boolean error;
+	private String output;
+	
+	public ScheduleMailVisitor(String username, String password){
 		people= new HashMap<String, String>();
 		locations = new HashMap<String, String>();
 		timeZoneset = false;
@@ -106,15 +108,26 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		endingDay=0;
 		endingMonth=0;
 		endingYear=0;
-		events = new ArrayList<VEvent>();
 		lastDoing="";
 		lastLocation="";
 		participants = new ArrayList<String>();
 		repeatingSet=false;
 		repeatingIntervall=0;
 		locationSet = false;
+		error =false;
+		output ="";
+		this.username = username;
+		this.password = password;
 	}
-
+	
+	public boolean hasError(){
+		return error;
+	}
+	
+	public String getError(){
+		return output;
+	}
+	
 	private void setLocationSet(boolean v){
 		locationSet = v;
 	}
@@ -158,11 +171,7 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	private void setLastDoing(String doing) {
 		lastDoing=doing;
 	}
-	
-	private ArrayList<VEvent> getEvents(){
-		return events;
-	}
-	
+		
 	public int getBeginningDay() {
 		return beginningDay;
 	}
@@ -267,10 +276,6 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 		this.toM = toM;
 	}
 
-	public String getOutput(){
-		return output;
-	}
-
 	@Override
 	public void visit(NodeChoice n) {
 		n.accept(this);
@@ -324,6 +329,8 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	}
 
 	/**
+	
+	/**
 	 * Scope()
 	 * 
 	 * f0-> Declarations()
@@ -333,7 +340,6 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	public void visit(Scope n) {
 		n.f0.accept(this); //Declarations
 		n.f1.accept(this);
-		output=icsCalendar.toString();
 
 	}
 
@@ -436,9 +442,6 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 	@Override
 	public void visit(Body n) {
 		n.f0.accept(this);
-		
-		for (VEvent current: getEvents())
-			icsCalendar.getComponents().add(current);
 
 	}
 
@@ -544,8 +547,6 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 			event.getProperties().add(partecipante);
 		}
 		
-		participants.clear();
-		
 		if (isLocationSet()){
 			net.fortuna.ical4j.model.property.Location location = new net.fortuna.ical4j.model.property.Location( getLastLocation());
 			event.getProperties().add(location);
@@ -572,7 +573,32 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 			setRepeatingSet(false);
 		}
 		
-		getEvents().add(event);
+				
+		net.fortuna.ical4j.model.Calendar icsCalendar = new net.fortuna.ical4j.model.Calendar();
+		icsCalendar.getProperties().add(new ProdId("-//Daniele Campogiani//schedule 1.0//EN"));
+		icsCalendar.getProperties().add(Version.VERSION_2_0);
+		icsCalendar.getProperties().add(CalScale.GREGORIAN);
+		icsCalendar.getComponents().add(event);
+		
+		String body = "See details in attachment";
+		String subject ="Remember: "+getLastDoing()+ " on " + getBeginningDay()+"/"+getBeginnigMonth()+"/"+getBeginningYear();
+		
+		try {
+			sendMail(username, password, participants, subject, body, "event.ics", icsCalendar.toString());
+		} catch (AddressException e) {
+			error = true;
+			output=e.getMessage();
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			error = true;
+			output=e.getMessage();
+		} catch (IOException e) {
+			error = true;
+			output=e.getMessage();
+		}
+		
+		participants.clear();
+		
 	}
 
 	/**
@@ -836,4 +862,10 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 
 	}
 
+	
+	private void  sendMail(String username, String password, ArrayList<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
+		
+		MailSender.sendMail(username, password, receivers, subject, body, attachmentName, attachmentContent);
+	}
+	
 }

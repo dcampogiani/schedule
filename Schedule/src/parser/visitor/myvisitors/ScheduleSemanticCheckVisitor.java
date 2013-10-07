@@ -179,19 +179,16 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 
 	@Override
 	public void visit(NodeSequence n) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void visit(NodeTCF n) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void visit(NodeToken n) {
-		// TODO Auto-generated method stub
 
 	}
 	/**
@@ -202,7 +199,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(Scope n) {
-		// TODO Auto-generated method stub
 		n.f0.accept(this); //Declarations
 		if (hasError())
 			return;
@@ -400,7 +396,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(DayDate n) {
-		// TODO Auto-generated method stub
 		n.f0.accept(this);
 		int day = Integer.parseInt(n.f0.tokenImage);
 		if (day > 31 || day < 1){
@@ -473,7 +468,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(FromToDuration n) {
-		// TODO Auto-generated method stub
 		setFromTimeSet(false);
 		n.f0.accept(this);
 		n.f1.accept(this);
@@ -548,7 +542,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(Partecipants n) {
-		// TODO Auto-generated method stub
 		n.f0.accept(this);
 		n.f1.accept(this);
 		if (hasError())

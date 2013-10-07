@@ -102,7 +102,6 @@ public class DCEditorTextPane extends JTextPane {
 					if( isClear(begin, keyword) )
 						h.addHighlight(begin, begin+keyword.length(), new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY) );
 				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				pos+=keyword.length();

@@ -279,7 +279,7 @@ public abstract class IDEAbstractView implements IDEIView{
 
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(getLanguageName()+" source code", getFileExtension());
 		getFileChooser().setFileFilter(filter);
-		
+
 		JScrollPane scrollPane = (JScrollPane) tabbedPane.getSelectedComponent();
 		JViewport viewport = scrollPane.getViewport();
 		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
@@ -318,7 +318,6 @@ public abstract class IDEAbstractView implements IDEIView{
 				appendToConsole("Salvato "+ file.getName()+ " in "+ file.getAbsolutePath());
 				tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), file.getName());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				appendToConsole("Errore nel salvataggio del file:");
 				appendToConsole(e.toString());
@@ -331,7 +330,6 @@ public abstract class IDEAbstractView implements IDEIView{
 	}
 
 	public void clearTree() {
-		// TODO Auto-generated method stub
 		if (this.tree!=null)
 			tree.setVisible(false);
 
@@ -348,13 +346,13 @@ public abstract class IDEAbstractView implements IDEIView{
 		return editor.getText();
 
 	}
-	
+
 	public void saveToFile(String content, String description, String extension){
 		Boolean aborted = false;
 		File file = null;
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(description, extension);
 		getFileChooser().setFileFilter(filter);
-		
+
 		int returnValue = getFileChooser().showSaveDialog(frame);
 		aborted = true;
 		if (returnValue == JFileChooser.APPROVE_OPTION){
@@ -365,7 +363,7 @@ public abstract class IDEAbstractView implements IDEIView{
 			aborted = false;
 
 		}
-		
+
 		if (aborted)
 			return;
 
@@ -380,16 +378,16 @@ public abstract class IDEAbstractView implements IDEIView{
 				out.close();
 				appendToConsole("Salvato "+ file.getName()+ " in "+ file.getAbsolutePath());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				appendToConsole("Errore nel salvataggio del file:");
 				appendToConsole(e.toString());
 			}
 		}
-		
-		
 
-		
+
+
+
 	}
+
 
 }

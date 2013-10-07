@@ -8,15 +8,21 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import parser.ParseException;
 import parser.ScheduleParser;
 import parser.syntaxtree.Scope;
 import parser.visitor.myvisitors.ScheduleIcsVisitor;
+import parser.visitor.myvisitors.ScheduleMailVisitor;
 import parser.visitor.myvisitors.ScheduleSemanticCheckVisitor;
 import view.IDEIView;
 
@@ -26,8 +32,11 @@ public class ScheduleController implements IDEIController {
 	private ArrayList<String> keywords;
 	private IDEIView view;
 	boolean parserInit=false;
+	@SuppressWarnings("unused")
 	private ScheduleParser parser;
 	private JFileChooser fileChooser;
+	private String username;
+	private String password;
 
 	public ScheduleController(){
 
@@ -67,7 +76,6 @@ public class ScheduleController implements IDEIController {
 
 	@Override
 	public ArrayList<String> getSeparators() {
-		// TODO Auto-generated method stub
 		if (separators==null)
 			separators = new ArrayList<String>();
 		return separators;
@@ -75,7 +83,6 @@ public class ScheduleController implements IDEIController {
 
 	@Override
 	public ArrayList<String> getKeywords() {
-		// TODO Auto-generated method stub
 		if (keywords==null)
 			keywords = new ArrayList<String>();
 		return keywords;
@@ -83,14 +90,12 @@ public class ScheduleController implements IDEIController {
 
 	@Override
 	public void setView(IDEIView view) {
-		// TODO Auto-generated method stub
 		if (view!=null)
 			this.view=view;
 	}
 
 	public void souceChanged(String source) {
 		view.clearConsole();
-		//view.appendToConsole("DA CONTROLLER: "+source);
 		StringReader reader = new StringReader(source);
 		BufferedReader buff= new BufferedReader(reader);
 		if(!parserInit)
@@ -109,14 +114,12 @@ public class ScheduleController implements IDEIController {
 			else 
 				view.appendToConsole("OK");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			view.appendToConsole(e.getMessage() );
 		} 
 	}
 
 
 	public ArrayList<JMenu> getMenus() {
-		// TODO Auto-generated method stub
 
 		ArrayList<JMenu> result = new ArrayList<JMenu>();
 		JMenu mnRun = new JMenu("Run");
@@ -157,25 +160,62 @@ public class ScheduleController implements IDEIController {
 		parserInit=true;
 		try {
 			Scope scope = ScheduleParser.Scope();
-			//view.appendToConsole("Sintassi OK");
 			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
 			scope.accept(semanticVisitor);
-			//view.appendToConsole("Semantic Check:");
 			if (semanticVisitor.hasError())
 				view.appendToConsole(semanticVisitor.getOutput());
-			//else 
-				//view.appendToConsole("OK");
+
 			ScheduleIcsVisitor icsVisitor = new ScheduleIcsVisitor();
 			scope.accept(icsVisitor);
 			saveToFile(icsVisitor.getOutput(), "iCalendar", "ics");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			view.appendToConsole(e.getMessage() );
 		} 
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	private void sendMails(){
+		view.clearConsole();
+		StringReader reader = new StringReader(view.getCurrentSource());
+		BufferedReader buff = new BufferedReader(reader);
+		
+		if(!parserInit)
+			parser= new ScheduleParser(buff);
+		else 
+			ScheduleParser.ReInit(buff);
+		parserInit=true;
+		try {
+			Scope scope = ScheduleParser.Scope();
+			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
+			scope.accept(semanticVisitor);
+			if (semanticVisitor.hasError())
+				view.appendToConsole(semanticVisitor.getOutput());
+			if (username==null || password == null || username.equals("") || password.equals("")){
+				
+				JTextField userField = new JTextField();
+				JPasswordField passwordField = new JPasswordField();
+				final JComponent[] inputs = new JComponent[] {
+						new JLabel("Mail"),
+						userField,
+						new JLabel("Password"),
+						passwordField
+				};
+				JOptionPane.showMessageDialog(null, inputs, "Gmail Settings", JOptionPane.PLAIN_MESSAGE);
+				
+				username=userField.getText();
+				password=passwordField.getText();
+			}
+			
+			ScheduleMailVisitor mailVisitor = new ScheduleMailVisitor(username, password);
+			scope.accept(mailVisitor);
+			if (mailVisitor.hasError())
+				view.appendToConsole(mailVisitor.getError());
+			else 
+				JOptionPane.showMessageDialog(null, "Mails Sent");
+		} catch (ParseException e) {
+			view.appendToConsole(e.getMessage() );
+		}
 	}
 	
 	private void saveToFile(String content, String description, String extension){
