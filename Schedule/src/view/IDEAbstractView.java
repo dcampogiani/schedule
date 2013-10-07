@@ -19,6 +19,7 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.DefaultTreeModel;
 
 import java.awt.Color;
 
@@ -198,10 +199,10 @@ public abstract class IDEAbstractView implements IDEIView{
 			this.controller=controller;
 	}
 
-	public void setTree(JTree tree){
-		this.tree=tree;
-	}	
-
+	public JTree getTree(){
+		return getJTree();
+	}
+	
 	public void clearConsole(){
 		console.setText("");
 	}
@@ -330,8 +331,8 @@ public abstract class IDEAbstractView implements IDEIView{
 	}
 
 	public void clearTree() {
-		if (this.tree!=null)
-			tree.setVisible(false);
+		//if (this.tree!=null)
+			//tree.setVisible(false);
 
 	}
 

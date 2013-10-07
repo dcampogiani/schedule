@@ -16,11 +16,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.tree.DefaultTreeModel;
 
 import parser.ParseException;
 import parser.ScheduleParser;
 import parser.syntaxtree.Scope;
+import parser.visitor.myvisitors.ScheduleASTVisitor;
 import parser.visitor.myvisitors.ScheduleIcsVisitor;
 import parser.visitor.myvisitors.ScheduleMailVisitor;
 import parser.visitor.myvisitors.ScheduleSemanticCheckVisitor;
@@ -111,8 +114,12 @@ public class ScheduleController implements IDEIController {
 			view.appendToConsole("Semantic Check:");
 			if (semanticVisitor.hasError())
 				view.appendToConsole(semanticVisitor.getOutput());
-			else 
+			else {
 				view.appendToConsole("OK");
+				ScheduleASTVisitor astVisitor = new ScheduleASTVisitor();
+				scope.accept(astVisitor);
+				view.getTree().setModel(new DefaultTreeModel(astVisitor.getTree()));
+			}
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
 		} 

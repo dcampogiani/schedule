@@ -353,7 +353,6 @@ public class ScheduleIcsVisitor implements IVoidVisitor {
 
 	}
 
-
 	/**
 	 * TimeZoneDeclaration()
 	 * 
