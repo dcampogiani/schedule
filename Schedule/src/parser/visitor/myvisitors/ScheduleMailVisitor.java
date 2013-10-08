@@ -5,8 +5,6 @@ import java.net.SocketException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -36,15 +34,8 @@ import parser.syntaxtree.Doing;
 import parser.syntaxtree.Duration;
 import parser.syntaxtree.Event;
 import parser.syntaxtree.FromToDuration;
-import parser.syntaxtree.INode;
 import parser.syntaxtree.Location;
 import parser.syntaxtree.LocationDeclaration;
-import parser.syntaxtree.NodeChoice;
-import parser.syntaxtree.NodeList;
-import parser.syntaxtree.NodeListOptional;
-import parser.syntaxtree.NodeOptional;
-import parser.syntaxtree.NodeSequence;
-import parser.syntaxtree.NodeTCF;
 import parser.syntaxtree.NodeToken;
 import parser.syntaxtree.OthersPartecipants;
 import parser.syntaxtree.Partecipant;
@@ -58,62 +49,20 @@ import parser.syntaxtree.Scope;
 import parser.syntaxtree.TimeEvent;
 import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
-import parser.visitor.IVoidVisitor;
 import util.MailSender;
 
-public class ScheduleMailVisitor implements IVoidVisitor {
+public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 	
 	private String username;
 	private String password;
 	
-	private HashMap<String, String> people;
-	private HashMap<String, String> locations;
 	private TimeZone timezone;
 	private VTimeZone vtTimeZone;
-	private boolean timeZoneset;
-	private int fromH;
-	private int fromM;
-	private int toH;
-	private int toM;
-	private boolean fromTimeSet;
-	private int beginningDay;
-	private int beginnigMonth;
-	private int beginningYear;
-	private boolean beginningDateSet;
-	private int endingDay;
-	private int endingMonth;
-	private int endingYear;
-	private String lastDoing;
-	private String lastLocation;
-	private ArrayList<String> participants;
-	private boolean repeatingSet;
-	private int repeatingIntervall;
-	private boolean locationSet;
 	private boolean error;
 	private String output;
 	
 	public ScheduleMailVisitor(String username, String password){
-		people= new HashMap<String, String>();
-		locations = new HashMap<String, String>();
-		timeZoneset = false;
-		fromH=0;
-		fromM=0;
-		toH=0;
-		toM=0;
-		fromTimeSet=false;
-		beginningDay=0;
-		beginnigMonth=0;
-		beginningYear=0;
-		beginningDateSet=false;
-		endingDay=0;
-		endingMonth=0;
-		endingYear=0;
-		lastDoing="";
-		lastLocation="";
-		participants = new ArrayList<String>();
-		repeatingSet=false;
-		repeatingIntervall=0;
-		locationSet = false;
+		super();
 		error =false;
 		output ="";
 		this.username = username;
@@ -128,206 +77,6 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 		return output;
 	}
 	
-	private void setLocationSet(boolean v){
-		locationSet = v;
-	}
-	
-	private boolean isLocationSet(){
-		return locationSet;
-	}
-	
-	private int getRepeatingIntervall(){
-		return repeatingIntervall;
-	}
-	
-	private void setRepeatingIntervall(int value){
-		repeatingIntervall=value;
-	}
-	
-	private boolean isRepeatingSet(){
-		return repeatingSet;
-	}
-	
-	private void setRepeatingSet(boolean v) {
-		repeatingSet = v;
-	}
-	
-	private ArrayList<String> getLastParticipants() {
-		return participants;
-	}
-	
-	private String getLastLocation() {
-		return ""+lastLocation;
-	}
-	
-	private void setLastLocation(String location){
-		lastLocation=location;
-	}
-	
-	private String getLastDoing(){
-		return ""+lastDoing;
-	}
-	
-	private void setLastDoing(String doing) {
-		lastDoing=doing;
-	}
-		
-	public int getBeginningDay() {
-		return beginningDay;
-	}
-
-	public void setBeginningDay(int beginningDay) {
-		this.beginningDay = beginningDay;
-	}
-
-	public int getBeginnigMonth() {
-		return beginnigMonth;
-	}
-
-	public void setBeginnigMonth(int beginnigMonth) {
-		this.beginnigMonth = beginnigMonth;
-	}
-
-	public int getBeginningYear() {
-		return beginningYear;
-	}
-
-	public void setBeginningYear(int beginningYear) {
-		this.beginningYear = beginningYear;
-	}
-
-	public int getEndingDay() {
-		return endingDay;
-	}
-
-	public void setEndingDay(int endingDay) {
-		this.endingDay = endingDay;
-	}
-
-	public int getEndingMonth() {
-		return endingMonth;
-	}
-
-	public void setEndingMonth(int endingMonth) {
-		this.endingMonth = endingMonth;
-	}
-
-	public int getEndingYear() {
-		return endingYear;
-	}
-
-	public void setEndingYear(int endingYear) {
-		this.endingYear = endingYear;
-	}
-
-	private void setBeginningDateSet(boolean v){
-		beginningDateSet = v;
-	}
-
-	private boolean isBeginningDateSet(){
-		return beginningDateSet;
-	}
-
-	private void setFromTimeSet(boolean v){
-		fromTimeSet=v;
-	}
-
-	private boolean isFromTimeSet(){
-		return fromTimeSet;
-	}
-
-	private void setTimeZoneSet(boolean v){
-		timeZoneset=v;
-	}
-
-	private boolean isTimeZoneSet(){
-		return timeZoneset;
-	}
-
-	public int getFromH() {
-		return fromH;
-	}
-
-	public void setFromH(int fromH) {
-		this.fromH = fromH;
-	}
-
-	public int getFromM() {
-		return fromM;
-	}
-
-	public void setFromM(int fromM) {
-		this.fromM = fromM;
-	}
-
-	public int getToH() {
-		return toH;
-	}
-
-	public void setToH(int toH) {
-		this.toH = toH;
-	}
-
-	public int getToM() {
-		return toM;
-	}
-
-	public void setToM(int toM) {
-		this.toM = toM;
-	}
-
-	@Override
-	public void visit(NodeChoice n) {
-		n.accept(this);
-		return;
-	}
-
-	@Override
-	public void visit(NodeList n) {
-		for (final Iterator<INode> e = n.elements(); e.hasNext();) {
-			e.next().accept(this);
-		}
-		return;
-
-	}
-
-	@Override
-	public void visit(NodeListOptional n) {
-		if (n.present()) {
-			for (final Iterator<INode> e = n.elements(); e.hasNext();) {
-				e.next().accept(this);
-			}
-			return;
-		} else
-			return;
-
-	}
-
-	@Override
-	public void visit(NodeOptional n) {
-		if (n.present()) {
-			n.node.accept(this);
-			return;
-		} else
-			return;
-
-	}
-
-	@Override
-	public void visit(NodeSequence n) {
-
-	}
-
-	@Override
-	public void visit(NodeTCF n) {
-
-	}
-
-	@Override
-	public void visit(NodeToken n) {
-
-	}
-
 	/**
 	
 	/**
@@ -358,7 +107,6 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 		n.f1.accept(this); //VariableDeclaration
 
 	}
-
 
 	/**
 	 * TimeZoneDeclaration()
@@ -410,7 +158,7 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 		n.f3.accept(this);
 		String sub = n.f3.tokenImage.substring(1, n.f3.tokenImage.length()-1);
 
-		people.put(n.f1.tokenImage, sub);
+		getPeople().put(n.f1.tokenImage, sub);
 
 	}
 
@@ -429,7 +177,7 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 		n.f2.accept(this);
 		n.f3.accept(this);
 		String sub = n.f3.tokenImage.substring(1, n.f3.tokenImage.length()-1);
-		locations.put(n.f1.tokenImage, sub);
+		getLocations().put(n.f1.tokenImage, sub);
 
 	}
 
@@ -584,7 +332,7 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 		String subject ="Remember: "+getLastDoing()+ " on " + getBeginningDay()+"/"+getBeginnigMonth()+"/"+getBeginningYear();
 		
 		try {
-			sendMail(username, password, participants, subject, body, "event.ics", icsCalendar.toString());
+			sendMail(username, password, getLastParticipants(), subject, body, "event.ics", icsCalendar.toString());
 		} catch (AddressException e) {
 			error = true;
 			output=e.getMessage();
@@ -597,7 +345,7 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 			output=e.getMessage();
 		}
 		
-		participants.clear();
+		getLastParticipants().clear();
 		
 	}
 
@@ -774,7 +522,7 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 			}
 			else{
 				//caso id
-				getLastParticipants().add(people.get(token.tokenImage));
+				getLastParticipants().add(getPeople().get(token.tokenImage));
 			}
 		}
 
@@ -809,7 +557,7 @@ public class ScheduleMailVisitor implements IVoidVisitor {
 				setLastLocation(sub);
 			}
 			else{
-				setLastLocation(locations.get(token.tokenImage));
+				setLastLocation(getLocations().get(token.tokenImage));
 			}
 		}
 

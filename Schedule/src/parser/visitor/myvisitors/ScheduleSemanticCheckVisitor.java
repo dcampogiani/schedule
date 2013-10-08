@@ -3,8 +3,6 @@ package parser.visitor.myvisitors;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import parser.syntaxtree.AllDayDuration;
 import parser.syntaxtree.Body;
@@ -15,15 +13,8 @@ import parser.syntaxtree.Doing;
 import parser.syntaxtree.Duration;
 import parser.syntaxtree.Event;
 import parser.syntaxtree.FromToDuration;
-import parser.syntaxtree.INode;
 import parser.syntaxtree.Location;
 import parser.syntaxtree.LocationDeclaration;
-import parser.syntaxtree.NodeChoice;
-import parser.syntaxtree.NodeList;
-import parser.syntaxtree.NodeListOptional;
-import parser.syntaxtree.NodeOptional;
-import parser.syntaxtree.NodeSequence;
-import parser.syntaxtree.NodeTCF;
 import parser.syntaxtree.NodeToken;
 import parser.syntaxtree.OthersPartecipants;
 import parser.syntaxtree.Partecipant;
@@ -37,96 +28,22 @@ import parser.syntaxtree.Scope;
 import parser.syntaxtree.TimeEvent;
 import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
-import parser.visitor.IVoidVisitor;
 
-public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
+public class ScheduleSemanticCheckVisitor extends ScheduleAbstractBasicVisitor {
 
 	private boolean error;
 	private String output;
 	private ArrayList<String> validTimeZones;
-	private HashMap<String, String> people;
-	private HashMap<String, String> locations;
-	private boolean beginningDateSet;
-	private Date beginningDate;
-	private int fromH;
-	private int fromM;
-	private int toH;
-	private int toM;
-	private boolean fromTimeSet;
+
 
 	public ScheduleSemanticCheckVisitor(){
+		super();
 		error=false;
 		output="";
 		validTimeZones = new ArrayList<String>();
 		validTimeZones.add("Europe/Rome");
 		validTimeZones.add("Europe/London");
-		people = new HashMap<String, String>();
-		locations = new HashMap<String, String>();
-		beginningDateSet=false;
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(1900, 0, 1);
-		beginningDate = calendar.getTime();
-		fromH=0;
-		fromM=0;
-		toH=0;
-		toM=0;
-		fromTimeSet=false;
-	}
-	
-	private void setFromTimeSet(boolean v){
-		fromTimeSet=v;
-	}
-	
-	private boolean isFromTimeSet(){
-		return fromTimeSet;
-	}
-	
-	private void setBeginningDateSet(boolean v){
-		beginningDateSet = v;
-	}
 
-	public int getFromH() {
-		return fromH;
-	}
-
-	public void setFromH(int fromH) {
-		this.fromH = fromH;
-	}
-
-	public int getFromM() {
-		return fromM;
-	}
-
-	public void setFromM(int fromM) {
-		this.fromM = fromM;
-	}
-
-	public int getToH() {
-		return toH;
-	}
-
-	public void setToH(int toH) {
-		this.toH = toH;
-	}
-
-	public int getToM() {
-		return toM;
-	}
-
-	public void setToM(int toM) {
-		this.toM = toM;
-	}
-
-	private boolean isBeginningDateSet(){
-		return beginningDateSet;
-	}
-
-	private void setBeginningDate(Date date){
-		beginningDate=date;
-	}
-
-	private Date getBeginningDate(){
-		return beginningDate;
 	}
 
 	public boolean hasError(){
@@ -137,60 +54,6 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 		return output;
 	}
 
-	@Override
-	public void visit(NodeChoice n) {
-		n.accept(this);
-
-	}
-
-	@Override
-	public void visit(NodeList n) {
-
-		for (final Iterator<INode> e = n.elements(); e.hasNext();) {
-			if(hasError()) return; 
-			else error=false;
-			e.next().accept(this);
-		}
-		return;
-
-	}
-
-	@Override
-	public void visit(NodeListOptional n) {
-		if (n.present()) {
-			for (final Iterator<INode> e = n.elements(); e.hasNext();) {
-				e.next().accept(this);
-			}
-			return;
-		} else
-			return;
-
-	}
-
-	@Override
-	public void visit(NodeOptional n) {
-		if (n.present()) {
-			n.node.accept(this);
-			return;
-		} else
-			return;
-
-	}
-
-	@Override
-	public void visit(NodeSequence n) {
-
-	}
-
-	@Override
-	public void visit(NodeTCF n) {
-
-	}
-
-	@Override
-	public void visit(NodeToken n) {
-
-	}
 	/**
 	 * Scope()
 	 * 
@@ -273,14 +136,14 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(PersonDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (people.containsKey(n.f1.tokenImage)){
+		if (getPeople().containsKey(n.f1.tokenImage)){
 			error=true;
 			output = "Person "+ n.f1.tokenImage +" already defined.";
 			return;
 		}
 		n.f2.accept(this);
 		n.f3.accept(this);
-		people.put(n.f1.tokenImage, n.f3.tokenImage);
+		getPeople().put(n.f1.tokenImage, n.f3.tokenImage);
 
 	}
 
@@ -296,14 +159,14 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 	public void visit(LocationDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
-		if (locations.containsKey(n.f1.tokenImage)){
+		if (getLocations().containsKey(n.f1.tokenImage)){
 			error = true;
 			output = "Location " + n.f1.tokenImage+ " already defined.";
 			return;
 		}
 		n.f2.accept(this);
 		n.f3.accept(this);
-		locations.put(n.f1.tokenImage, n.f3.tokenImage);
+		getLocations().put(n.f1.tokenImage, n.f3.tokenImage);
 
 	}
 
@@ -425,15 +288,21 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 
 		if (isBeginningDateSet()){
 
-			if (getBeginningDate().after(newDate) ){
+			Calendar calendar2 = Calendar.getInstance();
+			calendar2.set(getBeginningYear(), getBeginnigMonth()-1,getBeginningDay());
+			Date beginningDate = calendar2.getTime();
+			
+			if (beginningDate.after(newDate) ){
 				error = true;
-				output=getBeginningDate()+ " is after "+newDate+" .";
+				output=beginningDate+ " is after "+newDate+" .";
 				return;
 			}
 		}
 
 		else {
-			setBeginningDate(newDate);
+			setBeginningDay(day);
+			setBeginnigMonth(month);
+			setBeginningYear(year);
 			setBeginningDateSet(true);
 		}
 	}
@@ -581,7 +450,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			}
 			else{
 				//caso id
-				if (!people.containsKey(token.tokenImage)){
+				if (!getPeople().containsKey(token.tokenImage)){
 					error=true;
 					output= token.tokenImage+" is not a defined person.";
 					return;
@@ -620,7 +489,7 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			}
 			else{
 				//caso id
-				if (!locations.containsKey(token.tokenImage)){
+				if (!getLocations().containsKey(token.tokenImage)){
 					error=true;
 					output=token.tokenImage+ " is not a defined location";
 					return;
@@ -683,7 +552,5 @@ public class ScheduleSemanticCheckVisitor implements IVoidVisitor {
 			return;
 		setBeginningDateSet(false);
 	}
-
-
 
 }

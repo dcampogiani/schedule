@@ -329,7 +329,6 @@ public abstract class IDEAbstractView implements IDEIView{
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
-
 	public String getCurrentSource(){
 
 		Component component = tabbedPane.getSelectedComponent();
