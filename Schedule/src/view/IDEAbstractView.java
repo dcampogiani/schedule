@@ -19,7 +19,6 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.tree.DefaultTreeModel;
 
 import java.awt.Color;
 
@@ -118,6 +117,8 @@ public abstract class IDEAbstractView implements IDEIView{
 	protected JTree getJTree(){
 		if (tree==null)
 			tree = new JTree();
+			//tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode()));
+			tree.setVisible(false);
 		return tree;
 	}
 

@@ -16,7 +16,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -112,13 +111,16 @@ public class ScheduleController implements IDEIController {
 			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
 			scope.accept(semanticVisitor);
 			view.appendToConsole("Semantic Check:");
-			if (semanticVisitor.hasError())
+			if (semanticVisitor.hasError()){
 				view.appendToConsole(semanticVisitor.getOutput());
+				view.getTree().setVisible(false);
+			}
 			else {
 				view.appendToConsole("OK");
 				ScheduleASTVisitor astVisitor = new ScheduleASTVisitor();
 				scope.accept(astVisitor);
 				view.getTree().setModel(new DefaultTreeModel(astVisitor.getTree()));
+				view.getTree().setVisible(true);
 			}
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );

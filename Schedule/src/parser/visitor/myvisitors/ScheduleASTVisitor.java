@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
 import javax.swing.tree.DefaultMutableTreeNode;
-
-
 import parser.syntaxtree.AllDayDuration;
 import parser.syntaxtree.Body;
 import parser.syntaxtree.Day;
@@ -64,6 +61,7 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 	private int endingDay;
 	private int endingMonth;
 	private int endingYear;
+	private boolean timeZoneSet;
 
 	public ScheduleASTVisitor(){
 		beginningDay=0;
@@ -84,8 +82,17 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 		endingYear=0;
 		people = new HashMap<String, String>();
 		locations = new HashMap<String, String>();
+		timeZoneSet=false;
 	}
 
+	public void setTimeZoneSet(boolean v){
+		this.timeZoneSet = v;
+	}
+	
+	public boolean isTimeZoneSet(){
+		return timeZoneSet;
+	}
+	
 	public int getEndingDay() {
 		return endingDay;
 	}
@@ -279,7 +286,6 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 
 	@Override
 	public void visit(NodeToken n) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -323,6 +329,7 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 		n.f0.accept(this);
 		n.f1.accept(this);
 		n.f2.accept(this);
+		setTimeZoneSet(true);
 
 		DefaultMutableTreeNode app = null;
 		app = new DefaultMutableTreeNode("TimeZone = "+n.f2.tokenImage);
@@ -390,7 +397,11 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 	 */
 	@Override
 	public void visit(Body n) {
+		if (!isTimeZoneSet()){
+			tree = new DefaultMutableTreeNode("CURRENT AST");
+		}
 		n.f0.accept(this);
+
 	}
 
 	/**
@@ -407,23 +418,19 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 		setBeginningDateSet(false);
 		n.f1.accept(this);
 		setBeginningDateSet(true);
-
+		
 		DefaultMutableTreeNode dayNode= new DefaultMutableTreeNode(getBeginningDay()+"-"+getBeginnigMonth()+"-"+getBeginningYear());
-
-		if (tree==null){//non inizializzato da TimeZone
-			tree = dayNode;
-			System.out.println(tree);
-
-		}
-
-		else{
-			tree.add(dayNode);
-			System.out.println(tree);
-			System.out.println(dayNode);
-		}
-
+		
+		tree.add(dayNode);
+		
+		DefaultMutableTreeNode app = tree;
+		
+		tree=dayNode;
+		
 		n.f2.accept(this);
 		n.f3.accept(this);
+		
+		tree=app;
 
 	}
 
@@ -444,8 +451,9 @@ public class ScheduleASTVisitor implements IVoidVisitor {
 
 		n.f2.accept(this); //Doing
 
-		DefaultMutableTreeNode eventNode = new DefaultMutableTreeNode("from: "+getFromH()+":"+getFromM()+ " to: "+getToH()+":"+getToM());
+		DefaultMutableTreeNode eventNode = new DefaultMutableTreeNode("from: "+getFromH()+":"+getFromM()+ " to: "+getToH()+":"+getToM());		
 		tree.add(eventNode);
+		
 
 		if (n.f3.present()){ //Partecipants
 			Partecipants partecipants = (Partecipants)n.f3.node;
