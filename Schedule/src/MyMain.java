@@ -1,7 +1,9 @@
 
 
+
 import controller.IDEIController;
 import controller.ScheduleController;
+
 import view.IDEIView;
 import view.ScheduleView;
 
@@ -18,6 +20,7 @@ public class MyMain {
 		IDEIController controller = new ScheduleController();
 		IDEIView window = new ScheduleView(controller);
 		controller.setView(window);
+
 		
 	}
 

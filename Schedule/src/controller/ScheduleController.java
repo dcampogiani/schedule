@@ -26,6 +26,7 @@ import parser.visitor.myvisitors.ScheduleASTVisitor;
 import parser.visitor.myvisitors.ScheduleIcsVisitor;
 import parser.visitor.myvisitors.ScheduleMailVisitor;
 import parser.visitor.myvisitors.ScheduleSemanticCheckVisitor;
+import parser.visitor.myvisitors.ScheduleWebVisitor;
 import view.IDEIView;
 
 public class ScheduleController implements IDEIController {
@@ -127,7 +128,6 @@ public class ScheduleController implements IDEIController {
 		} 
 	}
 
-
 	public ArrayList<JMenu> getMenus() {
 
 		ArrayList<JMenu> result = new ArrayList<JMenu>();
@@ -141,7 +141,6 @@ public class ScheduleController implements IDEIController {
 				generateIcall();
 			}
 		});
-
 		mnRun.add(mntmExportAsIcal);
 
 		JMenuItem mntmSendReminders = new JMenuItem("Send reminders");
@@ -152,6 +151,16 @@ public class ScheduleController implements IDEIController {
 			}
 		});
 		mnRun.add(mntmSendReminders);
+		
+		JMenuItem mntWeb = new JMenuItem("Create Web View");
+		mntWeb.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		mntWeb.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				generateWebView();
+				
+			}
+		});
+		mnRun.add(mntWeb);
 
 		return result;
 
@@ -222,6 +231,43 @@ public class ScheduleController implements IDEIController {
 				view.appendToConsole(mailVisitor.getError());
 			else 
 				JOptionPane.showMessageDialog(null, "Mails Sent");
+		} catch (ParseException e) {
+			view.appendToConsole(e.getMessage() );
+		}
+	}
+	
+	private void generateWebView(){
+		view.clearConsole();
+		StringReader reader = new StringReader(view.getCurrentSource());
+		BufferedReader buff = new BufferedReader(reader);
+		
+		if(!parserInit)
+			parser= new ScheduleParser(buff);
+		else 
+			ScheduleParser.ReInit(buff);
+		parserInit=true;
+		try {
+			Scope scope = ScheduleParser.Scope();
+			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
+			scope.accept(semanticVisitor);
+			if (semanticVisitor.hasError())
+				view.appendToConsole(semanticVisitor.getOutput());
+			
+			int year;
+			
+			
+			JTextField yearField = new JTextField();
+			final JComponent[] inputs = new JComponent[] {
+					new JLabel("Choose Year"),
+					yearField,
+			};
+			JOptionPane.showMessageDialog(null, inputs, "Web View Settings", JOptionPane.PLAIN_MESSAGE);
+			
+			year = Integer.parseInt(yearField.getText());
+
+			ScheduleWebVisitor webVisitor = new ScheduleWebVisitor(year);
+			scope.accept(webVisitor);
+			saveToFile(webVisitor.getOutput(), "HTML file", "html");
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
 		}
