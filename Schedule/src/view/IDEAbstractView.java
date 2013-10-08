@@ -98,7 +98,6 @@ public abstract class IDEAbstractView implements IDEIView{
 		mainSplitPane.setRightComponent(treeScrollPane);
 
 		tree = getJTree();
-		clearTree();
 		treeScrollPane.setViewportView(tree);
 
 		frame.setVisible(true);
@@ -117,7 +116,6 @@ public abstract class IDEAbstractView implements IDEIView{
 	protected JTree getJTree(){
 		if (tree==null)
 			tree = new JTree();
-			//tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode()));
 			tree.setVisible(false);
 		return tree;
 	}
@@ -331,11 +329,6 @@ public abstract class IDEAbstractView implements IDEIView{
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
-	public void clearTree() {
-		//if (this.tree!=null)
-			//tree.setVisible(false);
-
-	}
 
 	public String getCurrentSource(){
 
