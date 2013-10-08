@@ -268,6 +268,8 @@ public class ScheduleController implements IDEIController {
 			ScheduleWebVisitor webVisitor = new ScheduleWebVisitor(year);
 			scope.accept(webVisitor);
 			saveToFile(webVisitor.getOutput(), "HTML file", "html");
+
+			
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
 		}
