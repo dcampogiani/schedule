@@ -69,7 +69,7 @@ public class ScheduleController implements IDEIController {
 		separators.add("\t");
 
 	}
-	
+
 	protected JFileChooser getFileChooser(){
 		if (fileChooser == null){
 			fileChooser = new JFileChooser();
@@ -151,13 +151,13 @@ public class ScheduleController implements IDEIController {
 			}
 		});
 		mnRun.add(mntmSendReminders);
-		
+
 		JMenuItem mntWeb = new JMenuItem("Create Web View");
 		mntWeb.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntWeb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				generateWebView();
-				
+
 			}
 		});
 		mnRun.add(mntWeb);
@@ -170,7 +170,7 @@ public class ScheduleController implements IDEIController {
 		view.clearConsole();
 		StringReader reader = new StringReader(view.getCurrentSource());
 		BufferedReader buff = new BufferedReader(reader);
-		
+
 		if(!parserInit)
 			parser= new ScheduleParser(buff);
 		else 
@@ -189,7 +189,7 @@ public class ScheduleController implements IDEIController {
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
 		} 
-		
+
 	}
 
 	@SuppressWarnings("deprecation")
@@ -197,20 +197,20 @@ public class ScheduleController implements IDEIController {
 		view.clearConsole();
 		StringReader reader = new StringReader(view.getCurrentSource());
 		BufferedReader buff = new BufferedReader(reader);
-		
+
 		if(!parserInit)
 			parser= new ScheduleParser(buff);
 		else 
 			ScheduleParser.ReInit(buff);
 		parserInit=true;
 		try {
-			Scope scope = ScheduleParser.Scope();
+			final Scope scope = ScheduleParser.Scope();
 			ScheduleSemanticCheckVisitor semanticVisitor = new ScheduleSemanticCheckVisitor();
 			scope.accept(semanticVisitor);
 			if (semanticVisitor.hasError())
 				view.appendToConsole(semanticVisitor.getOutput());
 			if (username==null || password == null || username.equals("") || password.equals("")){
-				
+
 				JTextField userField = new JTextField();
 				JPasswordField passwordField = new JPasswordField();
 				final JComponent[] inputs = new JComponent[] {
@@ -220,27 +220,32 @@ public class ScheduleController implements IDEIController {
 						passwordField
 				};
 				JOptionPane.showMessageDialog(null, inputs, "Gmail Settings", JOptionPane.PLAIN_MESSAGE);
-				
+
 				username=userField.getText();
 				password=passwordField.getText();
 			}
-			
-			ScheduleMailVisitor mailVisitor = new ScheduleMailVisitor(username, password);
-			scope.accept(mailVisitor);
-			if (mailVisitor.hasError())
-				view.appendToConsole(mailVisitor.getError());
-			else 
-				JOptionPane.showMessageDialog(null, "Mails Sent");
+
+			final ScheduleMailVisitor mailVisitor = new ScheduleMailVisitor(username, password);
+			Thread t = new Thread(){
+				public void run() {
+					scope.accept(mailVisitor);
+					if (mailVisitor.hasError())
+						view.appendToConsole(mailVisitor.getError());
+					else 
+						JOptionPane.showMessageDialog(null, "Mails Sent");};
+			};
+			t.run();
+
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
 		}
 	}
-	
+
 	private void generateWebView(){
 		view.clearConsole();
 		StringReader reader = new StringReader(view.getCurrentSource());
 		BufferedReader buff = new BufferedReader(reader);
-		
+
 		if(!parserInit)
 			parser= new ScheduleParser(buff);
 		else 
@@ -252,31 +257,31 @@ public class ScheduleController implements IDEIController {
 			scope.accept(semanticVisitor);
 			if (semanticVisitor.hasError())
 				view.appendToConsole(semanticVisitor.getOutput());
-			
+
 			int year;
-			
-			
+
+
 			JTextField yearField = new JTextField();
 			final JComponent[] inputs = new JComponent[] {
 					new JLabel("Choose Year"),
 					yearField,
 			};
 			JOptionPane.showMessageDialog(null, inputs, "Web View Settings", JOptionPane.PLAIN_MESSAGE);
-			
+
 			year = Integer.parseInt(yearField.getText());
 
 			ScheduleWebVisitor webVisitor = new ScheduleWebVisitor(year);
 			scope.accept(webVisitor);
 			saveToFile(webVisitor.getOutput(), "HTML file", "html");
 
-			
+
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
 		}
 	}
-	
+
 	private void saveToFile(String content, String description, String extension){
 		view.saveToFile(content, description, extension);
 	}
-	
+
 }
