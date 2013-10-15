@@ -234,7 +234,7 @@ public class ScheduleController implements IDEIController {
 					else 
 						JOptionPane.showMessageDialog(null, "Mails Sent");};
 			};
-			t.run();
+			t.start();
 
 		} catch (ParseException e) {
 			view.appendToConsole(e.getMessage() );
