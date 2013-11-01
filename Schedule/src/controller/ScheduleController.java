@@ -134,7 +134,7 @@ public class ScheduleController implements IDEIController {
 		JMenu mnRun = new JMenu("Run");
 		result.add(mnRun);
 
-		JMenuItem mntmExportAsIcal = new JMenuItem("Export as .ical");
+		JMenuItem mntmExportAsIcal = new JMenuItem("Export as .ics");
 		mntmExportAsIcal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntmExportAsIcal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
