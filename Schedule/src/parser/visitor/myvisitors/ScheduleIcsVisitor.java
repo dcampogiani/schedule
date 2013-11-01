@@ -95,10 +95,11 @@ public class ScheduleIcsVisitor extends ScheduleAbstractAdvancedVisitor {
 	 */
 	@Override
 	public void visit(Declarations n) {
-		if (n.f0.present()){ //TimeZoneDeclaration
+		/*if (n.f0.present()){ //TimeZoneDeclaration
 			TimeZoneDeclaration tzd = (TimeZoneDeclaration)n.f0.node;
 			tzd.accept(this);
-		}
+		}*/
+		n.f0.accept(this);
 		n.f1.accept(this); //VariableDeclaration
 
 	}

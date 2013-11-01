@@ -19,19 +19,10 @@ public class ScheduleParser implements ScheduleParserConstants {
 
   static final public Declarations Declarations() throws ParseException {
   // --- JTB generated node declarations ---
-  NodeOptional n0 = new NodeOptional();
-  TimeZoneDeclaration n1 = null;
-  NodeListOptional n2 = new NodeListOptional();
-  VariableDeclaration n3 = null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 5:
-      n1 = TimeZoneDeclaration();
-      n0.addNode(n1);
-      break;
-    default:
-      jj_la1[0] = jj_gen;
-      ;
-    }
+  TimeZoneDeclaration n0 = null;
+  NodeListOptional n1 = new NodeListOptional();
+  VariableDeclaration n2 = null;
+    n0 = TimeZoneDeclaration();
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -40,14 +31,14 @@ public class ScheduleParser implements ScheduleParserConstants {
         ;
         break;
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[0] = jj_gen;
         break label_1;
       }
-      n3 = VariableDeclaration();
-      n2.addNode(n3);
+      n2 = VariableDeclaration();
+      n1.addNode(n2);
     }
-    n2.nodes.trimToSize();
-    {if (true) return new Declarations(n0, n2);}
+    n1.nodes.trimToSize();
+    {if (true) return new Declarations(n0, n1);}
     throw new Error("Missing return statement in function");
   }
 
@@ -84,7 +75,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n0 = new NodeChoice(n2, 1, 2);
       break;
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[1] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -147,7 +138,7 @@ public class ScheduleParser implements ScheduleParserConstants {
         ;
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[2] = jj_gen;
         break label_2;
       }
       n1 = Day();
@@ -181,7 +172,7 @@ public class ScheduleParser implements ScheduleParserConstants {
         ;
         break;
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[3] = jj_gen;
         break label_3;
       }
     }
@@ -214,7 +205,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n4.addNode(n5);
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[4] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -223,7 +214,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n6.addNode(n7);
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[5] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -232,7 +223,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n8.addNode(n9);
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[6] = jj_gen;
       ;
     }
     n11 = jj_consume_token(12);
@@ -282,7 +273,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n0 = new NodeChoice(n2, 1, 2);
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -367,7 +358,7 @@ public class ScheduleParser implements ScheduleParserConstants {
         ;
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[8] = jj_gen;
         break label_4;
       }
       n4 = OthersPartecipants();
@@ -409,7 +400,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n0 = new NodeChoice(n3, 1, 2);
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[9] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -448,7 +439,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       n0 = new NodeChoice(n3, 1, 2);
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -510,7 +501,7 @@ public class ScheduleParser implements ScheduleParserConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[12];
+  static final private int[] jj_la1 = new int[11];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -518,10 +509,10 @@ public class ScheduleParser implements ScheduleParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x20,0x180,0x180,0x200,0x800,0x40000,0x100000,0x200000,0xc000,0x80000,0x10000000,0x50000000,};
+      jj_la1_0 = new int[] {0x180,0x180,0x200,0x800,0x40000,0x100000,0x200000,0xc000,0x80000,0x10000000,0x50000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -542,7 +533,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -556,7 +547,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -573,7 +564,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -583,7 +574,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -599,7 +590,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -608,7 +599,7 @@ public class ScheduleParser implements ScheduleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 11; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -664,7 +655,7 @@ public class ScheduleParser implements ScheduleParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 11; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

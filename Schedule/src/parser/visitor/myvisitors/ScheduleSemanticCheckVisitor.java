@@ -79,12 +79,15 @@ public class ScheduleSemanticCheckVisitor extends ScheduleAbstractBasicVisitor {
 	 */
 	@Override
 	public void visit(Declarations n) {
-		if (n.f0.present()){ //TimeZoneDeclaration
+		/*if (n.f0.present()){ //TimeZoneDeclaration
 			TimeZoneDeclaration tzd = (TimeZoneDeclaration)n.f0.node;
 			tzd.accept(this);
 			if (hasError())
 				return;
-		}
+		}*/
+		n.f0.accept(this);
+		if (hasError())
+			return;
 		n.f1.accept(this); //VariableDeclaration
 		if (hasError())
 			return;

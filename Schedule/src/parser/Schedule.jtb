@@ -21,7 +21,7 @@ void Scope() : { }
 
 void Declarations() : { }
 {
-	( TimeZoneDeclaration() )? ( VariableDeclaration() )*
+	TimeZoneDeclaration() ( VariableDeclaration() )*
 }
 
 void TimeZoneDeclaration() : { }
