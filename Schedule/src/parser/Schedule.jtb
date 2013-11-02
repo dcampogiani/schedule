@@ -46,7 +46,7 @@ void LocationDeclaration() : { }
 
 void Body() : { }
 {
-	( Day() )*
+	( Day() )+
 }
 
 void Day() : { }

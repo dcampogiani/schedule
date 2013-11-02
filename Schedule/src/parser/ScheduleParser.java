@@ -129,10 +129,12 @@ public class ScheduleParser implements ScheduleParserConstants {
 
   static final public Body Body() throws ParseException {
   // --- JTB generated node declarations ---
-  NodeListOptional n0 = new NodeListOptional();
+  NodeList n0 = new NodeList();
   Day n1 = null;
     label_2:
     while (true) {
+      n1 = Day();
+      n0.addNode(n1);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 9:
         ;
@@ -141,8 +143,6 @@ public class ScheduleParser implements ScheduleParserConstants {
         jj_la1[2] = jj_gen;
         break label_2;
       }
-      n1 = Day();
-      n0.addNode(n1);
     }
     n0.nodes.trimToSize();
     {if (true) return new Body(n0);}
