@@ -55,7 +55,7 @@ public class ScheduleController implements IDEIController {
 		keywords.add("repeating");
 		keywords.add("every");
 		keywords.add("days");
-		keywords.add("untill");
+		keywords.add("until");
 		keywords.add("person");
 		keywords.add("location");
 		keywords.add("weekly");

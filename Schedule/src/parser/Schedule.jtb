@@ -123,7 +123,7 @@ void RepeatingTime() : { }
 
 void RepeatingStop() : { }
 {
-  "untill" DayDate()
+  "until" DayDate()
 }
 
 TOKEN :

@@ -544,7 +544,7 @@ public class ScheduleSemanticCheckVisitor extends ScheduleAbstractBasicVisitor {
 	/**
 	 * RepeatingStop()
 	 * 
-	 * f0-> untill
+	 * f0-> until
 	 * f1-> DayDate
 	 */
 	@Override

@@ -258,7 +258,7 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 			eventNode.add(repeatingNode);
 
 			repeatingNode.add(new DefaultMutableTreeNode("Every "+getRepeatingIntervall()+ " days"));
-			repeatingNode.add(new DefaultMutableTreeNode("Untill: "+getEndingDay()+"-"+getEndingMonth()+"-"+getEndingYear()));
+			repeatingNode.add(new DefaultMutableTreeNode("Until: "+getEndingDay()+"-"+getEndingMonth()+"-"+getEndingYear()));
 
 			setRepeatingSet(false);
 		}
@@ -530,7 +530,7 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 	/**
 	 * RepeatingStop()
 	 * 
-	 * f0-> untill
+	 * f0-> until
 	 * f1-> DayDate
 	 */
 	@Override
