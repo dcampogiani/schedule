@@ -29,6 +29,7 @@ public interface IDEIController {
 	/**
 	 * Set the IDEIView associated to the controller
 	 * @param view the view associated to the controller
+	 * @see IDEIView
 	 */
 	public void setView(IDEIView view);
 	

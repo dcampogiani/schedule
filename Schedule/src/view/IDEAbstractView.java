@@ -39,7 +39,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.awt.Font;
 
-
+/**
+ * Abstract implementation of IDEIView, concrete subclasses have to implement getLanguageName() and getFileExtension()
+ * @author danielecampogiani
+ * @see IDEIView ScheduleView
+ */
 
 public abstract class IDEAbstractView implements IDEIView{
 
@@ -52,9 +56,6 @@ public abstract class IDEAbstractView implements IDEIView{
 
 	protected IDEIController controller;
 
-	/**
-	 * Create the application.
-	 */
 	public IDEAbstractView(IDEIController controller) {
 		this.controller=controller;
 		initialize();
@@ -103,6 +104,10 @@ public abstract class IDEAbstractView implements IDEIView{
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Get the FileChooser or create a new one if not existing yet
+	 * @return the current filechooser
+	 */
 	protected JFileChooser getFileChooser(){
 		if (fileChooser == null){
 			fileChooser = new JFileChooser();
@@ -113,6 +118,10 @@ public abstract class IDEAbstractView implements IDEIView{
 		return fileChooser;
 	}
 
+	/**
+	 * Return the Tree shown in the view or create a new one if not existing yet
+	 * @return the JTree
+	 */
 	protected JTree getJTree(){
 		if (tree==null)
 			tree = new JTree();
@@ -120,6 +129,10 @@ public abstract class IDEAbstractView implements IDEIView{
 		return tree;
 	}
 
+	/**
+	 * Get the console or create a new one if not existing yet
+	 * @return the console
+	 */
 	protected JTextArea getConsole(){
 		if (console==null){
 			console = new JTextArea();
@@ -134,6 +147,10 @@ public abstract class IDEAbstractView implements IDEIView{
 		return console;
 	}
 
+	/**
+	 * Get the JMenuBar or create a new one if not existing yet
+	 * @return the JMenuBar
+	 */
 	protected JMenuBar getMenuBar(){
 		if (menuBar==null){
 			menuBar = new JMenuBar();
@@ -185,31 +202,65 @@ public abstract class IDEAbstractView implements IDEIView{
 		return menuBar;
 	}
 
+	/**
+	 * Get the language name
+	 * @return the language name
+	 */
 	protected abstract String getLanguageName();
 
+	/**
+	 * Get the file extension for source code files
+	 * @return the file extension
+	 */
 	protected  abstract String getFileExtension();
 
+	/**
+	 * Notify the controller whenever source code is changed 
+	 * @param text the new source code
+	 */
 	private void currentTextChanged(String text){
 		controller.souceChanged(text);
 	}
 
+	/**
+	 * Set the controller for the view
+	 * @param controller the controller of the view
+	 * @see IDEIController
+	 */
 	public void setController(IDEIController controller){
 		if (controller!=null)
 			this.controller=controller;
 	}
 
+	/**
+	 * Return the Tree shown in the view
+	 * @return the JTree
+	 */
 	public JTree getTree(){
 		return getJTree();
 	}
 	
+	/**
+	 * Clear the console
+	 */
 	public void clearConsole(){
 		console.setText("");
 	}
 
+	/**
+	 * Append text to console
+	 * @param text the text you want to append
+	 */
 	public void appendToConsole(String text){
 		console.append(text+System.getProperty("line.separator"));
 	}
 
+	/**
+	 * Add a new file in the View
+	 * @param fileName the name to show on the JTabbedPane (if null or empty I'll show "New File" )
+	 * @param fileContent the content to display on a JScrollPane
+	 * @param filePath the file path
+	 */
 	protected void addNewFile(String fileName, String fileContent, String filePath){
 		JScrollPane scrollPane = new JScrollPane();
 		if ( fileName==null || fileName.equals(""))
@@ -236,6 +287,9 @@ public abstract class IDEAbstractView implements IDEIView{
 		currentTextChanged(editor.getText());
 	}
 
+	/**
+	 * Open a new file
+	 */
 	protected void openFile(){
 
 		int returnvalue = getFileChooser().showOpenDialog(frame);
@@ -275,6 +329,9 @@ public abstract class IDEAbstractView implements IDEIView{
 
 	}
 
+	/**
+	 * Save the file the user is working on
+	 */
 	protected void saveFile(){
 
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(getLanguageName()+" source code", getFileExtension());
@@ -325,10 +382,16 @@ public abstract class IDEAbstractView implements IDEIView{
 		}
 	}
 
+	/**
+	 * Seriously ? You need JavaDoc for this method? 
+	 */
 	protected void closeCurrentFile(){
 		tabbedPane.remove(tabbedPane.getSelectedComponent());
 	}
 
+	/**
+	 * Get the source code of the file the user is working on
+	 */
 	public String getCurrentSource(){
 
 		Component component = tabbedPane.getSelectedComponent();
@@ -341,6 +404,12 @@ public abstract class IDEAbstractView implements IDEIView{
 
 	}
 
+	/**
+	 * Utility method to save String content into a file
+	 * @param content file content
+	 * @param description description of file format
+	 * @param extension file extension
+	 */
 	public void saveToFile(String content, String description, String extension){
 		Boolean aborted = false;
 		File file = null;
