@@ -1,12 +1,14 @@
-
-
-
 import controller.IDEIController;
 import controller.ScheduleController;
 
 import view.IDEIView;
 import view.ScheduleView;
 
+/**
+ * Main Class for Schedule
+ * @author danielecampogiani
+ *
+ */
 
 public class MyMain {
 

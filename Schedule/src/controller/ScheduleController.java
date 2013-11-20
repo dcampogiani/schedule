@@ -30,6 +30,12 @@ import parser.visitor.myvisitors.ScheduleSemanticCheckVisitor;
 import parser.visitor.myvisitors.ScheduleWebVisitor;
 import view.IDEIView;
 
+/**
+ * Implementation of IDEIController for Schedule Programming Language
+ * @author danielecampogiani
+ * @see IDEIController
+ */
+
 public class ScheduleController implements IDEIController {
 
 	private ArrayList<String> separators;
@@ -71,6 +77,10 @@ public class ScheduleController implements IDEIController {
 
 	}
 
+	/**
+	 * Get the FileChooser or create a new one if not existing yet
+	 * @return the current filechooser
+	 */
 	protected JFileChooser getFileChooser(){
 		if (fileChooser == null){
 			fileChooser = new JFileChooser();
@@ -78,6 +88,10 @@ public class ScheduleController implements IDEIController {
 		return fileChooser;
 	}
 
+	/**
+	 * Used to get a list of keywords in the source code (to be highlighted)
+	 * @return the list of keywords
+	 */
 	@Override
 	public List<String> getSeparators() {
 		if (separators==null)
@@ -85,6 +99,10 @@ public class ScheduleController implements IDEIController {
 		return separators;
 	}
 
+	/**
+	 * Used to get a list of keywords in the source code (to be highlighted)
+	 * @return the list of keywords
+	 */
 	@Override
 	public List<String> getKeywords() {
 		if (keywords==null)
@@ -92,12 +110,21 @@ public class ScheduleController implements IDEIController {
 		return keywords;
 	}
 
+	/**
+	 * Set the IDEIView associated to the controller
+	 * @param view the view associated to the controller
+	 */
 	@Override
 	public void setView(IDEIView view) {
 		if (view!=null)
 			this.view=view;
 	}
 
+	/**
+	 * Called whenever the user change the source code
+	 * Used here to do a syntax and semantic check and show the result on the console
+	 * @param source the new source code
+	 */
 	public void souceChanged(String source) {
 		view.clearConsole();
 		StringReader reader = new StringReader(source);
@@ -129,6 +156,11 @@ public class ScheduleController implements IDEIController {
 		} 
 	}
 
+	/**
+	 * Used to set menus in the view
+	 * In schedule I set an JMenuItem for each visitor
+	 * @return list of JMenu to be displayed in the view
+	 */
 	public List<JMenu> getMenus() {
 
 		ArrayList<JMenu> result = new ArrayList<JMenu>();
@@ -167,6 +199,9 @@ public class ScheduleController implements IDEIController {
 
 	}
 
+	/**
+	 * Do a syntax and semantic check and if the source is valid generate the corresponding iCalendar file and save into a file
+	 */
 	private void generateIcall(){
 		view.clearConsole();
 		StringReader reader = new StringReader(view.getCurrentSource());
@@ -193,6 +228,9 @@ public class ScheduleController implements IDEIController {
 
 	}
 
+	/**
+	 * Do a syntax and semantic check and if the source is valid sent mails to attenders
+	 */
 	@SuppressWarnings("deprecation")
 	private void sendMails(){
 		view.clearConsole();
@@ -242,6 +280,9 @@ public class ScheduleController implements IDEIController {
 		}
 	}
 
+	/**
+	 * Do a syntax and semantic check and if the source is valid create the corrisponding web view (HTML + CSS)
+	 */
 	private void generateWebView(){
 		view.clearConsole();
 		StringReader reader = new StringReader(view.getCurrentSource());
@@ -281,6 +322,12 @@ public class ScheduleController implements IDEIController {
 		}
 	}
 
+	/**
+	 * Utility method to save String content into a file
+	 * @param content file content
+	 * @param description description of file format
+	 * @param extension file extension
+	 */
 	private void saveToFile(String content, String description, String extension){
 		view.saveToFile(content, description, extension);
 	}
