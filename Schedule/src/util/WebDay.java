@@ -1,12 +1,13 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WebDay {
 	
 	
 	private int day;
-	private ArrayList<WebEvent> events;
+	private List<WebEvent> events;
 	
 	public WebDay(int day) {
 		super();
@@ -22,11 +23,11 @@ public class WebDay {
 		this.day = day;
 	}
 
-	public ArrayList<WebEvent> getEvents() {
+	public List<WebEvent> getEvents() {
 		return events;
 	}
 
-	public void setEvents(ArrayList<WebEvent> events) {
+	public void setEvents(List<WebEvent> events) {
 		this.events = events;
 	}
 

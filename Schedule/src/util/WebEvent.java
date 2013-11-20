@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WebEvent {
 	
@@ -10,11 +11,11 @@ public class WebEvent {
 	int toM;
 	private String doing;
 	private String at;
-	private ArrayList<String> participants;
+	private List<String> participants;
 	
 	
 	public WebEvent(int fromH, int fromM, int toH, int toM, String doing,
-			String at, ArrayList<String> participants) {
+			String at, List<String> participants) {
 		super();
 		this.fromH = fromH;
 		this.fromM = fromM;
@@ -79,11 +80,11 @@ public class WebEvent {
 		this.at = at;
 	}
 
-	public ArrayList<String> getParticipants() {
+	public List<String> getParticipants() {
 		return participants;
 	}
 
-	public void setParticipants(ArrayList<String> participants) {
+	public void setParticipants(List<String> participants) {
 		this.participants = participants;
 	}
 	

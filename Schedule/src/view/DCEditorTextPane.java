@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -19,28 +20,28 @@ public class DCEditorTextPane extends JTextPane {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String path;
-	private ArrayList<String> keywords;
-	private ArrayList<String> separators;
+	private List<String> keywords;
+	private List<String> separators;
 
-	public ArrayList<String> getKeywords(){
+	public List<String> getKeywords(){
 		if(keywords==null)
 			keywords=new ArrayList<String>();
 		return keywords;
 	}
 
-	public void setKeywords(ArrayList<String> keywords){
+	public void setKeywords(List<String> keywords){
 		if (keywords!=null)
 			this.keywords=keywords;
 		highlight();
 	}
 
-	public ArrayList<String> getSeparators(){
+	public List<String> getSeparators(){
 		if(separators==null)
 			separators=new ArrayList<String>();
 		return separators;
 	}
 
-	public void setSeparators(ArrayList<String> separators){
+	public void setSeparators(List<String> separators){
 		if (separators!=null)
 			this.separators=separators;
 		highlight();
@@ -56,7 +57,7 @@ public class DCEditorTextPane extends JTextPane {
 		});
 	}
 
-	public DCEditorTextPane(String text,String path, ArrayList<String> keywords,ArrayList<String> separators){
+	public DCEditorTextPane(String text,String path, List<String> keywords,List<String> separators){
 		super();
 		if (text!=null)
 			setText(text);

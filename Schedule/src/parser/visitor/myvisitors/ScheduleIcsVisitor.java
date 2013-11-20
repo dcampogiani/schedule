@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
@@ -65,7 +66,7 @@ public class ScheduleIcsVisitor extends ScheduleAbstractAdvancedVisitor {
 		events = new ArrayList<VEvent>();
 	}
 
-	private ArrayList<VEvent> getEvents(){
+	private List<VEvent> getEvents(){
 		return events;
 	}
 	

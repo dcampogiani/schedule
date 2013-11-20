@@ -2,7 +2,7 @@ package parser.visitor.myvisitors;
 
 import java.util.HashMap;
 import java.util.Iterator;
-
+import java.util.Map;
 
 import parser.syntaxtree.INode;
 import parser.syntaxtree.NodeChoice;
@@ -43,11 +43,11 @@ public abstract class ScheduleAbstractBasicVisitor implements IVoidVisitor {
 		beginningYear=0;
 	}
 	
-	protected HashMap<String, String> getPeople(){
+	protected Map<String, String> getPeople(){
 		return this.people;
 	}
 	
-	protected HashMap<String, String> getLocations(){
+	protected Map<String, String> getLocations(){
 		return this.locations;
 	}
 
@@ -175,6 +175,5 @@ public abstract class ScheduleAbstractBasicVisitor implements IVoidVisitor {
 	public void visit(NodeToken n) {
 
 	}
-
 
 }

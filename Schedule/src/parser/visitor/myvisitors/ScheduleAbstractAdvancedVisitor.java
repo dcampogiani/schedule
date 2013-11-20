@@ -1,6 +1,7 @@
 package parser.visitor.myvisitors;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class ScheduleAbstractAdvancedVisitor extends
@@ -55,7 +56,7 @@ public abstract class ScheduleAbstractAdvancedVisitor extends
 		repeatingSet = v;
 	}
 	
-	protected ArrayList<String> getLastParticipants() {
+	protected List<String> getLastParticipants() {
 		return participants;
 	}
 	

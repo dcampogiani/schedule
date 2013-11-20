@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -78,14 +79,14 @@ public class ScheduleController implements IDEIController {
 	}
 
 	@Override
-	public ArrayList<String> getSeparators() {
+	public List<String> getSeparators() {
 		if (separators==null)
 			separators = new ArrayList<String>();
 		return separators;
 	}
 
 	@Override
-	public ArrayList<String> getKeywords() {
+	public List<String> getKeywords() {
 		if (keywords==null)
 			keywords = new ArrayList<String>();
 		return keywords;
@@ -128,7 +129,7 @@ public class ScheduleController implements IDEIController {
 		} 
 	}
 
-	public ArrayList<JMenu> getMenus() {
+	public List<JMenu> getMenus() {
 
 		ArrayList<JMenu> result = new ArrayList<JMenu>();
 		JMenu mnRun = new JMenu("Run");

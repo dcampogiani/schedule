@@ -1,7 +1,7 @@
 package util;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -23,7 +23,7 @@ import javax.mail.util.ByteArrayDataSource;
 public class MailSender {
 
 
-	public static void  sendMail(String username, String password, ArrayList<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
+	public static void  sendMail(String username, String password, List<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
 
 		final String user = username;
 		final String pass = password;

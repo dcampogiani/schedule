@@ -3,8 +3,8 @@ package parser.visitor.myvisitors;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -612,7 +612,7 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 	}
 
 	
-	private void  sendMail(String username, String password, ArrayList<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
+	private void  sendMail(String username, String password, List<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
 		
 		MailSender.sendMail(username, password, receivers, subject, body, attachmentName, attachmentContent);
 	}
