@@ -125,6 +125,7 @@ public class ScheduleController implements IDEIController {
 	 * Used here to do a syntax and semantic check and show the result on the console
 	 * @param source the new source code
 	 */
+	@Override
 	public void souceChanged(String source) {
 		view.clearConsole();
 		StringReader reader = new StringReader(source);
@@ -161,6 +162,7 @@ public class ScheduleController implements IDEIController {
 	 * In schedule I set an JMenuItem for each visitor
 	 * @return list of JMenu to be displayed in the view
 	 */
+	@Override
 	public List<JMenu> getMenus() {
 
 		ArrayList<JMenu> result = new ArrayList<JMenu>();
@@ -170,6 +172,7 @@ public class ScheduleController implements IDEIController {
 		JMenuItem mntmExportAsIcal = new JMenuItem("Export as .ics");
 		mntmExportAsIcal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntmExportAsIcal.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				generateIcall();
 			}
@@ -179,6 +182,7 @@ public class ScheduleController implements IDEIController {
 		JMenuItem mntmSendReminders = new JMenuItem("Send reminders");
 		mntmSendReminders.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntmSendReminders.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				sendMails();
 			}
@@ -188,6 +192,7 @@ public class ScheduleController implements IDEIController {
 		JMenuItem mntWeb = new JMenuItem("Create Web View");
 		mntWeb.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		mntWeb.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				generateWebView();
 
@@ -266,6 +271,7 @@ public class ScheduleController implements IDEIController {
 
 			final ScheduleMailVisitor mailVisitor = new ScheduleMailVisitor(username, password);
 			Thread t = new Thread(){
+				@Override
 				public void run() {
 					scope.accept(mailVisitor);
 					if (mailVisitor.hasError())

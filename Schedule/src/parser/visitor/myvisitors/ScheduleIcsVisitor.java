@@ -123,6 +123,7 @@ public class ScheduleIcsVisitor extends ScheduleAbstractAdvancedVisitor {
 	 * f2-> < TIMEZONE >
 	 * @param n
 	 */
+	@Override
 	public void visit(TimeZoneDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
@@ -234,6 +235,7 @@ public class ScheduleIcsVisitor extends ScheduleAbstractAdvancedVisitor {
 	 * f5-> Repeating
 	 * f6-> }
 	 */
+	@Override
 	public void visit(Event n) {
 		n.f0.accept(this);
 		n.f1.accept(this); //Duration

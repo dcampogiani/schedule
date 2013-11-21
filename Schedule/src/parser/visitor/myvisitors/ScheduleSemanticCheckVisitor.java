@@ -227,6 +227,7 @@ public class ScheduleSemanticCheckVisitor extends ScheduleAbstractBasicVisitor {
 	 * f5-> Repeating
 	 * f6-> }
 	 */
+	@Override
 	public void visit(Event n) {
 		n.f0.accept(this);
 		

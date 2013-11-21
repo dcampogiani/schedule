@@ -60,6 +60,7 @@ public class ScheduleWebVisitor extends ScheduleAbstractAdvancedVisitor {
 	 * f0-> Declarations()
 	 * f1-> Body()
 	 */
+	@Override
 	public void visit(Scope n) {
 		n.f0.accept(this); //Declarations
 		n.f1.accept(this);
@@ -89,6 +90,7 @@ public class ScheduleWebVisitor extends ScheduleAbstractAdvancedVisitor {
 	 * f2-> < TIMEZONE >
 	 * @param n
 	 */
+	@Override
 	public void visit(TimeZoneDeclaration n) {
 		n.f0.accept(this);
 		n.f1.accept(this);
@@ -193,6 +195,7 @@ public class ScheduleWebVisitor extends ScheduleAbstractAdvancedVisitor {
 	 * f5-> Repeating
 	 * f6-> }
 	 */
+	@Override
 	public void visit(Event n) {
 		n.f0.accept(this);
 		n.f1.accept(this); //Duration

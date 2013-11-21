@@ -17,6 +17,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -92,7 +93,7 @@ public abstract class IDEAbstractView implements IDEIView{
 		leftSplitPane.setRightComponent(consoleScollPane);
 		consoleScollPane.setViewportView(getConsole());
 
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		leftSplitPane.setLeftComponent(tabbedPane);
 
 		JScrollPane treeScrollPane = new JScrollPane();
@@ -162,6 +163,7 @@ public abstract class IDEAbstractView implements IDEIView{
 			JMenuItem mntmNew = new JMenuItem("New");
 			mntmNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			mntmNew.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					addNewFile(null, null,null);
 				}
@@ -171,6 +173,7 @@ public abstract class IDEAbstractView implements IDEIView{
 			JMenuItem mntmSave = new JMenuItem("Save");
 			mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			mntmSave.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					saveFile();
 				}
@@ -179,6 +182,7 @@ public abstract class IDEAbstractView implements IDEIView{
 			JMenuItem mntmOpen = new JMenuItem("Open");
 			mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			mntmOpen.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					openFile();
 				}
@@ -189,6 +193,7 @@ public abstract class IDEAbstractView implements IDEIView{
 			JMenuItem mntmClose = new JMenuItem("Close");
 			mntmClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			mntmClose.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					closeCurrentFile();
 				}
@@ -227,6 +232,7 @@ public abstract class IDEAbstractView implements IDEIView{
 	 * @param controller the controller of the view
 	 * @see IDEIController
 	 */
+	@Override
 	public void setController(IDEIController controller){
 		if (controller!=null)
 			this.controller=controller;
@@ -236,6 +242,7 @@ public abstract class IDEAbstractView implements IDEIView{
 	 * Return the Tree shown in the view
 	 * @return the JTree
 	 */
+	@Override
 	public JTree getTree(){
 		return getJTree();
 	}
@@ -243,6 +250,7 @@ public abstract class IDEAbstractView implements IDEIView{
 	/**
 	 * Clear the console
 	 */
+	@Override
 	public void clearConsole(){
 		console.setText("");
 	}
@@ -251,6 +259,7 @@ public abstract class IDEAbstractView implements IDEIView{
 	 * Append text to console
 	 * @param text the text you want to append
 	 */
+	@Override
 	public void appendToConsole(String text){
 		console.append(text+System.getProperty("line.separator"));
 	}
@@ -300,7 +309,7 @@ public abstract class IDEAbstractView implements IDEIView{
 
 			for (int i=0;i<tabbedPane.getComponentCount();i++){
 				JScrollPane scroll = (JScrollPane)tabbedPane.getComponent(i);
-				JViewport viewport = (JViewport) scroll.getViewport();
+				JViewport viewport = scroll.getViewport();
 				DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
 				if (editor.getFilePath().equals(file.getAbsolutePath())){
 					tabbedPane.setSelectedIndex(i);
@@ -392,13 +401,14 @@ public abstract class IDEAbstractView implements IDEIView{
 	/**
 	 * Get the source code of the file the user is working on
 	 */
+	@Override
 	public String getCurrentSource(){
 
 		Component component = tabbedPane.getSelectedComponent();
 		if (component==null)
 			return null;
 		JScrollPane scroll = (JScrollPane)component;
-		JViewport viewport = (JViewport) scroll.getViewport();
+		JViewport viewport = scroll.getViewport();
 		DCEditorTextPane editor = (DCEditorTextPane)viewport.getView();
 		return editor.getText();
 
@@ -410,6 +420,7 @@ public abstract class IDEAbstractView implements IDEIView{
 	 * @param description description of file format
 	 * @param extension file extension
 	 */
+	@Override
 	public void saveToFile(String content, String description, String extension){
 		Boolean aborted = false;
 		File file = null;
