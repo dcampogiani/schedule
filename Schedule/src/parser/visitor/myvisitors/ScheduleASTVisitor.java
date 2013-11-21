@@ -28,6 +28,12 @@ import parser.syntaxtree.TimeEvent;
 import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
 
+/**
+ * Generate a JTree to be shown in the view
+ * @author danielecampogiani
+ * @see ScheduleAbstractAdvancedVisitor
+ */
+
 public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 
 	private DefaultMutableTreeNode tree;
@@ -37,14 +43,16 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		super();
 	}
 
-
-
+	/**
+	 * Get the TreeNode corresponding to source code
+	 * @return the TreeNode
+	 */
 	public DefaultMutableTreeNode getTree(){
 		return tree;
 	}
 
-
-	/** Scope()
+	/** 
+	 * Scope ()
 	 * 
 	 * f0-> Declarations()
 	 * f1-> Body()
@@ -55,7 +63,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f1.accept(this);
 
 	}
-
 
 	/**
 	 * Declarations()
@@ -69,7 +76,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f1.accept(this); //VariableDeclaration
 
 	}
-
 	
 	/**
 	 * TimeZoneDeclaration()
@@ -90,7 +96,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		tree = app;
 
 	}
-
 	
 	/**
 	 * VariableDeclaration()
@@ -103,7 +108,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f0.accept(this);
 
 	}
-
 	
 	/**
 	 * PersonDeclaration()
@@ -125,7 +129,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		getPeople().put(n.f1.tokenImage, sub);
 
 	}
-
 	
 	/**
 	 * LocationDeclaration()
@@ -145,7 +148,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		getLocations().put(n.f1.tokenImage, sub);
 
 	}
-
 	
 	/**
 	 * Body()
@@ -161,7 +163,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f0.accept(this);
 
 	}
-
 	
 	/**
 	 * Day()
@@ -192,7 +193,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		tree=app;
 
 	}
-
 	
 	/**
 	 * Event()
@@ -263,7 +263,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 
 		getLastParticipants().clear();
 	}
-
 	
 	/**
 	 * DayDate()
@@ -300,7 +299,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		}
 
 	}
-
 	
 	/**
 	 * Duration()
@@ -312,7 +310,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f0.accept(this);
 
 	}
-
 	
 	/**
 	 * AllDayDuration()
@@ -328,7 +325,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		setToH(23);
 		setToM(59);
 	}
-
 	
 	/**
 	 * FromToDuration()
@@ -349,7 +345,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		setFromTimeSet(false);
 
 	}
-
 	
 	/**
 	 * TimeEvent()
@@ -379,7 +374,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		}
 
 	}
-
 	
 	/**
 	 * Doing()
@@ -395,7 +389,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		setLastDoing(sub);
 
 	}
-
 	
 	/**
 	 * Partecipants()
@@ -411,7 +404,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f2.accept(this);
 
 	}
-
 	
 	/**
 	 * OthersPartecipants()
@@ -425,7 +417,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f1.accept(this);
 
 	}
-
 	
 	/**
 	 * Partecipant()
@@ -449,7 +440,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		}
 
 	}
-
 	
 	/**
 	 * Location()
@@ -464,7 +454,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		setLocationSet(true);
 
 	}
-
 	
 	/**
 	 * Place()
@@ -486,7 +475,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		}
 
 	}
-
 	
 	/**
 	 * Repeating()
@@ -503,7 +491,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f2.accept(this);
 
 	}
-
 	
 	/**
 	 * RepeatingTime()
@@ -521,7 +508,6 @@ public class ScheduleASTVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f2.accept(this);
 
 	}
-
 	
 	/**
 	 * RepeatingStop()

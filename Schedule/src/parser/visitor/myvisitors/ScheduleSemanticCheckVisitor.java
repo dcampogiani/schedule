@@ -29,6 +29,12 @@ import parser.syntaxtree.TimeEvent;
 import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
 
+/**
+ * Semantic check of source code
+ * @author danielecampogiani
+ * @see ScheduleAbstractBasicVisitor
+ */
+
 public class ScheduleSemanticCheckVisitor extends ScheduleAbstractBasicVisitor {
 
 	private boolean error;
@@ -46,10 +52,18 @@ public class ScheduleSemanticCheckVisitor extends ScheduleAbstractBasicVisitor {
 
 	}
 
+	/**
+	 * Check if the code has semantic error
+	 * @return boolean value
+	 */
 	public boolean hasError(){
 		return error;
 	}
 
+	/**
+	 * Get the output of semantic check, can be an error or a success message
+	 * @return success or failure message
+	 */
 	public String getOutput(){
 		return output;
 	}

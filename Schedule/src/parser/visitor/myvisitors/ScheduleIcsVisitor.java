@@ -47,15 +47,20 @@ import parser.syntaxtree.TimeEvent;
 import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
 
+/**
+ * Generate the iCalendar file corresponding to source code
+ * @author danielecampogiani
+ * @see ScheduleAbstractAdvancedVisitor
+ */
+
 public class ScheduleIcsVisitor extends ScheduleAbstractAdvancedVisitor {
 
 	private String output;
 	private net.fortuna.ical4j.model.Calendar icsCalendar;
 	private TimeZone timezone;
 	private VTimeZone vtTimeZone;
-
 	private ArrayList<VEvent> events;
-
+	
 	public ScheduleIcsVisitor(){
 		super();
 		icsCalendar = new net.fortuna.ical4j.model.Calendar();
@@ -66,10 +71,19 @@ public class ScheduleIcsVisitor extends ScheduleAbstractAdvancedVisitor {
 		events = new ArrayList<VEvent>();
 	}
 
+	/**
+	 * Get all the events in the body
+	 * @return list of events
+	 * @see VEvent
+	 */
 	private List<VEvent> getEvents(){
 		return events;
 	}
 	
+	/**
+	 * Get the content of the iCalendar file
+	 * @return content of the iCalendar file
+	 */
 	public String getOutput(){
 		return output;
 	}

@@ -1,3 +1,4 @@
+package main;
 import controller.IDEIController;
 import controller.ScheduleController;
 

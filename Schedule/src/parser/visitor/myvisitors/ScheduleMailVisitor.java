@@ -51,16 +51,21 @@ import parser.syntaxtree.TimeZoneDeclaration;
 import parser.syntaxtree.VariableDeclaration;
 import util.MailSender;
 
+/**
+ * Send mail to participants and attach iCalendar file
+ * @author danielecampogiani
+ * @see ScheduleAbstractAdvancedVisitor
+ */
+
 public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
-	
+
 	private String username;
 	private String password;
-	
 	private TimeZone timezone;
 	private VTimeZone vtTimeZone;
 	private boolean error;
 	private String output;
-	
+
 	public ScheduleMailVisitor(String username, String password){
 		super();
 		error =false;
@@ -68,17 +73,25 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 		this.username = username;
 		this.password = password;
 	}
-	
+
+	/**
+	 * Check if there were errors sending mails
+	 * @return boolean value
+	 */
 	public boolean hasError(){
 		return error;
 	}
-	
+
+	/**
+	 * Get the error message
+	 * @return error message
+	 */
 	public String getError(){
 		return output;
 	}
-	
+
 	/**
-	
+
 	/**
 	 * Scope()
 	 * 
@@ -254,8 +267,8 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 		startDate.set(java.util.Calendar.HOUR_OF_DAY, getFromH());
 		startDate.set(java.util.Calendar.MINUTE, getFromM());
 		startDate.set(java.util.Calendar.SECOND, 0);
-		
-		
+
+
 		java.util.Calendar endDate = new GregorianCalendar();
 		if (isTimeZoneSet())
 			endDate.setTimeZone(timezone);
@@ -265,17 +278,17 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 		endDate.set(java.util.Calendar.HOUR_OF_DAY, getToH());
 		endDate.set(java.util.Calendar.MINUTE, getToM());	
 		endDate.set(java.util.Calendar.SECOND, 0);
-		
+
 		String doing = getLastDoing();
-		
+
 		DateTime start = new DateTime(startDate.getTime());
 		DateTime end = new DateTime(endDate.getTime());
 		VEvent event = new VEvent(start, end, doing);
-		
+
 		if (isTimeZoneSet())
 			event.getProperties().add(vtTimeZone.getTimeZoneId());
-	
-		
+
+
 		UidGenerator ug = null;
 		try {
 			ug = new UidGenerator("uidGen");
@@ -284,21 +297,21 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 		}
 		Uid uid = ug.generateUid();
 		event.getProperties().add(uid);
-		
+
 		for (String participant: getLastParticipants()){
 			Attendee partecipante = new Attendee(URI.create(participant));
 			partecipante.getParameters().add(Role.REQ_PARTICIPANT);
 			partecipante.getParameters().add(new Cn(participant));
 			event.getProperties().add(partecipante);
 		}
-		
+
 		if (isLocationSet()){
 			net.fortuna.ical4j.model.property.Location location = new net.fortuna.ical4j.model.property.Location( getLastLocation());
 			event.getProperties().add(location);
 		}
-		
+
 		if (isRepeatingSet()){
-			
+
 			java.util.Calendar stopDate = new GregorianCalendar();
 			stopDate.set(java.util.Calendar.MONTH, getEndingMonth()-1);
 			stopDate.set(java.util.Calendar.DAY_OF_MONTH, getEndingDay());
@@ -306,28 +319,28 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 			stopDate.set(java.util.Calendar.HOUR_OF_DAY, getToH());
 			stopDate.set(java.util.Calendar.MINUTE, getToM());	
 			stopDate.set(java.util.Calendar.SECOND, 0);
-			
+
 			DateTime stop = new DateTime(stopDate.getTime());
-			
+
 			Recur recur = new Recur(Recur.DAILY,null);
 			recur.setUntil(stop);
 			recur.setInterval(getRepeatingIntervall());
 			RRule rule = new RRule(recur);
 			event.getProperties().add(rule);
-			
+
 			setRepeatingSet(false);
 		}
-		
-				
+
+
 		net.fortuna.ical4j.model.Calendar icsCalendar = new net.fortuna.ical4j.model.Calendar();
 		icsCalendar.getProperties().add(new ProdId("-//Daniele Campogiani//schedule 1.0//EN"));
 		icsCalendar.getProperties().add(Version.VERSION_2_0);
 		icsCalendar.getProperties().add(CalScale.GREGORIAN);
 		icsCalendar.getComponents().add(event);
-		
+
 		String body = "See details in attachment"+System.getProperty("line.separator")+System.getProperty("line.separator")+ "Sent from Schedule";
 		String subject ="Remember: "+getLastDoing()+ " on " + getBeginningDay()+"/"+getBeginnigMonth()+"/"+getBeginningYear();
-		
+
 		try {
 			sendMail(username, password, getLastParticipants(), subject, body, "event.ics", icsCalendar.toString());
 		} catch (AddressException e) {
@@ -341,9 +354,9 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 			error = true;
 			output=e.getMessage();
 		}
-		
+
 		getLastParticipants().clear();
-		
+
 	}
 
 	/**
@@ -367,14 +380,14 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f3.accept(this);
 		n.f4.accept(this);
 		int year = Integer.parseInt(n.f4.tokenImage);
-		
+
 		if (!isBeginningDateSet()){
 			setBeginningDay(day);
 			setBeginnigMonth(month);
 			setBeginningYear(year);
 			setBeginningDateSet(true);
 		}
-		
+
 		else {
 			setEndingDay(day);
 			setEndingMonth(month);
@@ -446,12 +459,12 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 		n.f2.accept(this);
 		int minutes = Integer.parseInt(n.f2.tokenImage);
 
-		
+
 		if (!isFromTimeSet()){
 			setFromH(hour);
 			setFromM(minutes);
 		}
-		
+
 		else{
 			setToH(hour);
 			setToM(minutes);
@@ -607,10 +620,22 @@ public class ScheduleMailVisitor extends ScheduleAbstractAdvancedVisitor {
 
 	}
 
-	
+	/**
+	 * Send mail according to given arguments
+	 * @param username gmail username ex: "name.surname@gmail.com"
+	 * @param password gmail password
+	 * @param receivers list of receivers as mail ex: "name.surname@mail.com"
+	 * @param subject mail subject
+	 * @param body mail body
+	 * @param attachmentName name of attachment 
+	 * @param attachmentContent content of the attachment
+	 * @throws AddressException
+	 * @throws MessagingException
+	 * @throws IOException
+	 */
 	private void  sendMail(String username, String password, List<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
-		
+
 		MailSender.sendMail(username, password, receivers, subject, body, attachmentName, attachmentContent);
 	}
-	
+
 }
