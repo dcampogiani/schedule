@@ -1,6 +1,12 @@
 package util;
 
-import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Class used to store information of events in a year and get corresponding web representation
+ * @author danielecampogiani
+ * @see WebMonth WebDay WebEvent
+ */
 
 public class WebYear {
 
@@ -25,6 +31,13 @@ public class WebYear {
 
 	}
 
+	/**
+	 * Create a WebMonth
+	 * @param name month name
+	 * @param durata days in the month
+	 * @return the WebMonth
+	 * @see WebMonth
+	 */
 	private WebMonth createMonth (String name, int durata){
 		WebDay[] days = new WebDay[durata];
 
@@ -37,14 +50,28 @@ public class WebYear {
 		return result;
 	}
 
+	/**
+	 * Get WebMonth of the WebYear
+	 * @return array of WebMonth
+	 * @see WebMonth
+	 */
 	public WebMonth[] getMonths() {
 		return months;
 	}
 
+	/**
+	 * Set WebMonth of the WebYear
+	 * @param months array of WebMonth
+	 * @see WebMonth
+	 */
 	public void setMonths(WebMonth[] months) {
 		this.months = months;
 	}
 
+	/**
+	 * Get the web representation (HTML+CSS) of the WebYear
+	 * @return HTML and CSS as a String
+	 */
 	public String getWebRappresentation(){
 		String result="";
 
@@ -91,7 +118,22 @@ public class WebYear {
 		return result;
 	}
 
-	public void addEvent(String doing, int day, int month, int fromH, int fromM, int toH, int toM, ArrayList<String> participants, String location, int endingDay, int endingMonth, int repeatingIntervall){
+	/**
+	 * Add an Event to the WebYear
+	 * @param doing Event subject
+	 * @param day Event day
+	 * @param month Event month
+	 * @param fromH beginning time of the Event (hours)
+	 * @param fromM beginning time of the Event (minutes)
+	 * @param toH ending time of the Event (hours)
+	 * @param toM ending time of the Event (minutes)
+	 * @param participants list of participants
+	 * @param location location of the Event
+	 * @param endingDay ending day
+	 * @param endingMonth ending month
+	 * @param repeatingIntervall repeating interval (0 if not set)
+	 */
+	public void addEvent(String doing, int day, int month, int fromH, int fromM, int toH, int toM, List<String> participants, String location, int endingDay, int endingMonth, int repeatingIntervall){
 
 		WebMonth curMonth = getMonths()[month-1];
 		WebDay curDay = curMonth.getDays()[day-1];

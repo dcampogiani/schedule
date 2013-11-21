@@ -20,9 +20,27 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+/**
+ * Utility class to send mails using javamail and gmail
+ * @author danielecampogiani
+ *
+ */
+
 public class MailSender {
 
-
+	/**
+	 * Send mail according to given arguments
+	 * @param username gmail username ex: "name.surname@gmail.com"
+	 * @param password gmail password
+	 * @param receivers list of receivers as mail ex: "name.surname@mail.com"
+	 * @param subject mail subject
+	 * @param body mail body
+	 * @param attachmentName name of attachment 
+	 * @param attachmentContent content of the attachment
+	 * @throws AddressException
+	 * @throws MessagingException
+	 * @throws IOException
+	 */
 	public static void  sendMail(String username, String password, List<String> receivers, String subject, String body, String attachmentName, String attachmentContent) throws AddressException, MessagingException, IOException{
 
 		final String user = username;
