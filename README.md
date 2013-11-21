@@ -1,6 +1,6 @@
 Schedule
 ========
 
-![IDE Screenshot](/Schedule/Schedule.jpg "Schedule)
+![IDE Screenshot](/Schedule/Schedule.png "Schedule)
 
 Schedule Programming Language and IDE
