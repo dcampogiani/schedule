@@ -13,3 +13,5 @@ In this project I used:
 - JavaCC https://javacc.java.net
 - iCal4J http://build.mnode.org/projects/ical4j/
 - javaMail http://javamail.java.net
+
+You can find here a presentation about Schedule in italian : http://www.slideshare.net/DanieleCampogiani/presentazione-28502815
